@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Zap, ShieldCheck, Clock, Phone, ArrowRight, CheckCircle2,
-  Building2, Home, Star, Sparkles, Loader2, ArrowDown,
+  Building2, Home, Star,
   Bolt, MapPin, Award, TrendingUp,
 } from 'lucide-react';
 import { gsap, ScrollTrigger, useGSAP } from '../lib/gsap';
@@ -52,37 +52,37 @@ export default function HomePage() {
 
     // ── Logo cloud ──
     gsap.from('.logo-item', {
-      scrollTrigger: { trigger: '.logo-cloud', start: 'top 85%' },
-      opacity: 0, y: 20, stagger: 0.1, duration: 0.7, ease: 'power2.out',
+      scrollTrigger: { trigger: '.logo-cloud', start: 'top 95%', once: true },
+      opacity: 0, y: 20, stagger: 0.08, duration: 0.6, ease: 'power2.out',
     });
 
     // ── Services section header ──
     gsap.from('.services-header', {
-      scrollTrigger: { trigger: '#services', start: 'top 75%' },
-      opacity: 0, y: 40, duration: 0.8, ease: 'power3.out',
+      scrollTrigger: { trigger: '#services', start: 'top 95%', once: true },
+      opacity: 0, y: 30, duration: 0.7, ease: 'power3.out',
     });
     // Service cards stagger
     gsap.from('.service-card', {
-      scrollTrigger: { trigger: '.services-grid', start: 'top 80%' },
-      opacity: 0, y: 80, stagger: 0.15, duration: 0.9, ease: 'power3.out',
+      scrollTrigger: { trigger: '.services-grid', start: 'top 95%', once: true },
+      opacity: 0, y: 50, stagger: 0.12, duration: 0.8, ease: 'power3.out',
     });
 
     // ── About section ──
     gsap.from('.about-img-1', {
-      scrollTrigger: { trigger: '#about', start: 'top 75%' },
-      opacity: 0, x: -60, duration: 1, ease: 'power3.out',
+      scrollTrigger: { trigger: '#about', start: 'top 95%', once: true },
+      opacity: 0, x: -40, duration: 0.9, ease: 'power3.out',
     });
     gsap.from('.about-img-2', {
-      scrollTrigger: { trigger: '#about', start: 'top 75%' },
-      opacity: 0, x: -60, duration: 1, ease: 'power3.out', delay: 0.15,
+      scrollTrigger: { trigger: '#about', start: 'top 95%', once: true },
+      opacity: 0, x: -40, duration: 0.9, ease: 'power3.out', delay: 0.12,
     });
     gsap.from('.about-text', {
-      scrollTrigger: { trigger: '#about', start: 'top 70%' },
-      opacity: 0, x: 60, duration: 1, ease: 'power3.out',
+      scrollTrigger: { trigger: '#about', start: 'top 95%', once: true },
+      opacity: 0, x: 40, duration: 0.9, ease: 'power3.out',
     });
     gsap.from('.about-feature', {
-      scrollTrigger: { trigger: '.about-features', start: 'top 80%' },
-      opacity: 0, x: 40, stagger: 0.15, duration: 0.8, ease: 'power3.out',
+      scrollTrigger: { trigger: '.about-features', start: 'top 95%', once: true },
+      opacity: 0, y: 30, stagger: 0.12, duration: 0.7, ease: 'power3.out',
     });
 
     // Stats counter animation
@@ -90,7 +90,7 @@ export default function HomePage() {
       { el: '#stat-years', end: 15, suffix: '+' },
       { el: '#stat-clients', end: 1200, suffix: '+' },
       { el: '#stat-projects', end: 4800, suffix: '+' },
-      { el: '#stat-rating', end: 5.0, suffix: '★', decimals: 1 },
+      { el: '#stat-rating', end: 5.0, suffix: '\u2605', decimals: 1 },
     ];
     statsTargets.forEach(({ el, end, suffix, decimals = 0 }) => {
       const element = document.querySelector(el);
@@ -98,14 +98,14 @@ export default function HomePage() {
       const obj = { val: 0 };
       gsap.to(obj, {
         val: end,
-        duration: 2.2,
+        duration: 2,
         ease: 'power2.out',
         onUpdate() {
           element.textContent = decimals
             ? obj.val.toFixed(decimals) + suffix
             : Math.round(obj.val) + suffix;
         },
-        scrollTrigger: { trigger: '.stats-grid', start: 'top 80%' },
+        scrollTrigger: { trigger: '.stats-grid', start: 'top 95%', once: true },
       });
     });
 
@@ -129,31 +129,27 @@ export default function HomePage() {
 
     // ── CTA section text reveal ──
     gsap.from('.cta-line', {
-      scrollTrigger: { trigger: '.cta-section', start: 'top 65%' },
-      opacity: 0, y: 80, stagger: 0.12, duration: 0.9, ease: 'power4.out',
+      scrollTrigger: { trigger: '.cta-section', start: 'top 95%', once: true },
+      opacity: 0, y: 60, stagger: 0.1, duration: 0.8, ease: 'power4.out',
     });
     gsap.from('.cta-sub', {
-      scrollTrigger: { trigger: '.cta-section', start: 'top 60%' },
-      opacity: 0, y: 30, duration: 0.8, ease: 'power3.out', delay: 0.4,
+      scrollTrigger: { trigger: '.cta-section', start: 'top 90%', once: true },
+      opacity: 0, y: 20, duration: 0.7, ease: 'power3.out', delay: 0.3,
     });
     gsap.from('.cta-btn', {
-      scrollTrigger: { trigger: '.cta-section', start: 'top 55%' },
-      opacity: 0, scale: 0.9, duration: 0.7, ease: 'back.out(1.5)', delay: 0.6,
+      scrollTrigger: { trigger: '.cta-section', start: 'top 85%', once: true },
+      opacity: 0, scale: 0.95, duration: 0.6, ease: 'back.out(1.5)', delay: 0.5,
     });
 
     // ── Footer ──
     gsap.from('.footer-content', {
-      scrollTrigger: { trigger: '#footer', start: 'top 85%' },
-      opacity: 0, y: 40, duration: 0.9, ease: 'power3.out',
+      scrollTrigger: { trigger: '#footer', start: 'top 98%', once: true },
+      opacity: 0, y: 30, duration: 0.8, ease: 'power3.out',
     });
 
     // Scroll indicator arrow
     gsap.to('.scroll-arrow', {
-      y: 10,
-      repeat: -1,
-      yoyo: true,
-      duration: 0.8,
-      ease: 'power1.inOut',
+      y: 10, repeat: -1, yoyo: true, duration: 0.8, ease: 'power1.inOut',
     });
 
     return () => { ScrollTrigger.getAll().forEach(t => t.kill()); };
@@ -420,20 +416,10 @@ export default function HomePage() {
                   <img
                     src={service.img}
                     alt={service.title}
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-40 transition-opacity duration-500" />
-                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest text-slate-900 border border-white/20 shadow-sm">
+                  <div className="absolute top-4 left-4 bg-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest text-slate-900 shadow-sm">
                     {service.tag}
-                  </div>
-                  <div className="absolute bottom-4 left-4 right-4 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
-                    <div className="flex flex-wrap gap-2">
-                      {service.features.map(f => (
-                         <span key={f} className="bg-white/90 backdrop-blur-md text-slate-900 text-[9px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider border border-white/20 shadow-sm">
-                           {f}
-                         </span>
-                      ))}
-                    </div>
                   </div>
                 </div>
                 <div className="p-8 flex flex-col flex-1 bg-white">
@@ -468,13 +454,12 @@ export default function HomePage() {
           <div className="grid grid-cols-2 gap-4 md:gap-6 order-2 lg:order-1 relative">
             <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/10 to-transparent rounded-[3rem] -m-6 -z-10 blur-2xl" />
             <div className="space-y-4 md:space-y-6 pt-12 md:pt-20">
-              <div className="about-img-1 h-[240px] md:h-[380px] rounded-[2.5rem] overflow-hidden shadow-2xl relative group border-4 border-white">
+              <div className="about-img-1 h-[240px] md:h-[380px] rounded-[2.5rem] overflow-hidden shadow-xl relative border-4 border-white">
                 <img
                   src="https://images.unsplash.com/photo-1558402529-d2638a7023e9?q=80&w=2670&auto=format&fit=crop"
-                  className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105"
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                   alt="Smart home setup"
                 />
-                <div className="absolute inset-0 bg-blue-600/20 group-hover:bg-transparent transition-colors duration-500" />
               </div>
               <div className="about-img-1 bg-gradient-to-br from-slate-900 to-slate-800 p-8 rounded-[2rem] text-center text-white shadow-2xl border border-slate-700">
                 <p className="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400 mb-2">15+</p>
@@ -487,13 +472,12 @@ export default function HomePage() {
                 <p className="text-4xl md:text-6xl font-black text-blue-600 mb-2 relative z-10">1.2k+</p>
                 <p className="text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] text-slate-500 relative z-10">Local Clients</p>
               </div>
-              <div className="about-img-2 h-[240px] md:h-[360px] rounded-[2.5rem] overflow-hidden shadow-2xl border-4 border-white relative group">
+              <div className="about-img-2 h-[240px] md:h-[360px] rounded-[2.5rem] overflow-hidden shadow-xl border-4 border-white">
                 <img
                   src="https://images.unsplash.com/photo-1544724569-5f546fd6f2b5?q=80&w=2669&auto=format&fit=crop"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                   alt="Electric panel"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent opacity-60" />
               </div>
             </div>
           </div>
