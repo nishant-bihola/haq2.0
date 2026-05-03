@@ -1,0 +1,60 @@
+{
+  "entities": {
+    "Lead": {
+      "title": "Lead",
+      "description": "Information provided by a potential customer via contact forms or chat.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string" },
+        "service": { "type": "string" },
+        "message": { "type": "string" },
+        "source": { "type": "string", "description": "Form or Chat Assistant" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "phone", "createdAt"]
+    },
+    "ChatSession": {
+      "title": "Chat Session",
+      "description": "Conversation history between a user and the AI assistant.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "messages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "role": { "type": "string", "enum": ["user", "model"] },
+              "text": { "type": "string" },
+              "timestamp": { "type": "string", "format": "date-time" }
+            }
+          }
+        },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "firestore": {
+    "/leads/{leadId}": {
+      "schema": "Lead",
+      "description": "Leads collected from the website"
+    },
+    "/chats/{chatId}": {
+      "schema": "ChatSession",
+      "description": "AI Chat conversations"
+    },
+    "/chats/{chatId}/messages/{messageId}": {
+      "schema": {
+        "type": "object",
+        "properties": {
+          "role": { "type": "string" },
+          "text": { "type": "string" },
+          "timestamp": { "type": "string" }
+        }
+      },
+      "description": "Individual messages in a chat session"
+    }
+  }
+}
