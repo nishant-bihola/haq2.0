@@ -1,62 +1,57 @@
 import { motion } from 'motion/react';
 
-export default function Logo({ className = "", textClassName = "text-slate-900" }: { className?: string; textClassName?: string }) {
+interface LogoProps {
+  className?: string;
+  textClassName?: string;
+  /** show the flanking decorative lines (hide on very small viewports) */
+  showLines?: boolean;
+}
+
+export default function Logo({ className = '', textClassName = 'text-slate-900', showLines = true }: LogoProps) {
   return (
-    <div className={`flex items-center gap-2 ${className}`}>
-      <div className={`flex items-center font-display font-black tracking-tight text-xl sm:text-2xl md:text-3xl ${textClassName}`}>
-        <span className="uppercase italic leading-none">Ha</span>
+    <div className={`inline-flex items-center ${className}`}>
+      <div className={`flex items-center gap-1.5 font-display font-black tracking-tight ${textClassName}`}>
 
-        {/* Q glyph — bold ring with short crossbar tail (letter Q, not magnifying glass) */}
-        <div className="relative mx-0.5 flex items-center justify-center">
-          <svg
-            viewBox="0 0 80 88"
-            className="h-[1.15em] w-auto"
-            xmlns="http://www.w3.org/2000/svg"
+        {/* Left decorative rule — business-card style */}
+        {showLines && (
+          <span className="hidden sm:block w-5 h-px bg-current opacity-40" />
+        )}
+
+        {/* H A */}
+        <span className="text-[1em] uppercase tracking-[0.08em] leading-none select-none">
+          HA
+        </span>
+
+        {/* Q  — circle ring with animated lightning bolt inside */}
+        <svg
+          viewBox="0 0 40 40"
+          className="h-[1.05em] w-[1.05em]"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          {/* Outer ring */}
+          <circle
+            cx="20" cy="20" r="16"
+            stroke="currentColor"
+            strokeWidth="2.8"
             fill="none"
-          >
-            {/* Q body: bold circle ring */}
-            <circle
-              cx="38" cy="40"
-              r="26"
-              stroke="currentColor"
-              strokeWidth="12"
-              fill="none"
-            />
+          />
+          {/* Lightning bolt — royal brand blue */}
+          <motion.path
+            d="M23 6L11 22H19L15 34L29 18H21L23 6Z"
+            fill="#4f63d2"
+            animate={{ opacity: [0.8, 1, 0.8] }}
+            transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        </svg>
 
-            {/*
-              Q tail: starts inside the circle at 5-o'clock (lower-right interior),
-              exits the ring by only ~10px — classic letter-Q proportions, not a handle.
-            */}
-            <line
-              x1="50" y1="58"
-              x2="62" y2="70"
-              stroke="currentColor"
-              strokeWidth="12"
-              strokeLinecap="round"
-            />
+        {/* Right decorative rule */}
+        {showLines && (
+          <span className="hidden sm:block w-5 h-px bg-current opacity-40" />
+        )}
 
-            {/* Lightning bolt inside — blue glow pulse */}
-            <motion.path
-              d="M43 16L26 44H41L35 64L58 36H43L43 16Z"
-              fill="#2563eb"
-              animate={{
-                opacity: [0.8, 1, 0.8],
-                filter: [
-                  "drop-shadow(0 0 3px rgba(37,99,235,0.4))",
-                  "drop-shadow(0 0 10px rgba(37,99,235,0.9))",
-                  "drop-shadow(0 0 3px rgba(37,99,235,0.4))"
-                ]
-              }}
-              transition={{
-                duration: 1.6,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
-          </svg>
-        </div>
-
-        <span className="ml-1.5 font-display font-black tracking-[0.2em] text-[0.45em] sm:text-[0.52em] opacity-90 uppercase italic text-blue-600 leading-none self-center pb-0.5">
+        {/* ELECTRIC label */}
+        <span className="text-[0.44em] font-black tracking-[0.28em] uppercase text-blue-600 leading-none self-center pt-px select-none">
           Electric
         </span>
       </div>
