@@ -8,171 +8,7 @@ import {
 import { gsap, ScrollTrigger, useGSAP } from '../lib/gsap';
 import { cn } from '../lib/utils';
 
-// ─── Contact Form ────────────────────────────────────────────────────────────
-function ContactSection() {
-  const [formData, setFormData] = useState({
-    name: '', email: '', phone: '', service: '', message: '',
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    try {
-      const resp = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-      if (resp.ok) {
-        setIsSuccess(true);
-        setFormData({ name: '', email: '', phone: '', service: '', message: '' });
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  return (
-    <section id="contact" className="py-24 md:py-36 px-4 md:px-8 bg-slate-50">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-16 md:gap-24 items-start">
-          <div className="contact-left">
-            <div className="inline-block px-4 py-1.5 bg-blue-50 border border-blue-100 rounded-full text-blue-600 text-[10px] font-bold tracking-[0.2em] mb-6 uppercase">
-              Get Started
-            </div>
-            <h2 className="text-4xl md:text-6xl font-black mb-8 tracking-tighter uppercase italic leading-[1] max-w-xl">
-              Request a <span className="text-blue-600">Fast Consultation</span> & Quote.
-            </h2>
-            <p className="text-lg text-slate-500 font-medium leading-relaxed mb-12 max-w-md">
-              Need an electrician in Edmonton? Fill out the form and our Master Electricians will get back to you within 60 minutes.
-            </p>
-            <div className="space-y-6">
-              {[
-                { title: 'Service Area', detail: 'Edmonton, St. Albert, Sherwood Park & Area', icon: <MapPin className="w-5 h-5" /> },
-                { title: 'Direct Phone', detail: '1-780-297-9252', icon: <Phone className="w-5 h-5" /> },
-                { title: 'Operating Hours', detail: '24/7 Emergency Support Available', icon: <Clock className="w-5 h-5" /> },
-              ].map((item, idx) => (
-                <div key={idx} className="flex gap-5 items-center group">
-                  <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-blue-600 shadow-sm border border-slate-100 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
-                    {item.icon}
-                  </div>
-                  <div>
-                    <h4 className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-0.5">{item.title}</h4>
-                    <p className="text-base font-bold text-slate-900 tracking-tight">{item.detail}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="contact-right relative">
-            <div className="absolute inset-0 bg-blue-600 blur-[120px] opacity-[0.04] -z-10 rounded-full" />
-            <form onSubmit={handleSubmit} className="bg-white p-8 md:p-12 rounded-[3.5rem] shadow-[0_30px_100px_rgba(0,0,0,0.05)] border border-slate-100">
-              {isSuccess ? (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="py-20 text-center"
-                >
-                  <div className="w-20 h-20 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <CheckCircle2 className="w-10 h-10" />
-                  </div>
-                  <h3 className="text-2xl font-black mb-2 uppercase italic">Request Received!</h3>
-                  <p className="text-slate-500 font-medium">We'll call you back within 60 minutes.</p>
-                  <button
-                    type="button"
-                    onClick={() => setIsSuccess(false)}
-                    className="mt-8 text-blue-600 font-bold uppercase text-xs tracking-widest hover:underline"
-                  >
-                    Submit another request
-                  </button>
-                </motion.div>
-              ) : (
-                <div className="space-y-5">
-                  <div className="grid md:grid-cols-2 gap-5">
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Full Name *</label>
-                      <input
-                        required
-                        value={formData.name}
-                        onChange={e => setFormData({ ...formData, name: e.target.value })}
-                        type="text"
-                        placeholder="John Doe"
-                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-4 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-sm font-medium"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Phone Number *</label>
-                      <input
-                        required
-                        value={formData.phone}
-                        onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                        type="tel"
-                        placeholder="(780) 000-0000"
-                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-4 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-sm font-medium"
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Email (Optional)</label>
-                    <input
-                      value={formData.email}
-                      onChange={e => setFormData({ ...formData, email: e.target.value })}
-                      type="email"
-                      placeholder="you@example.com"
-                      className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-4 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-sm font-medium"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Service Type</label>
-                    <select
-                      value={formData.service}
-                      onChange={e => setFormData({ ...formData, service: e.target.value })}
-                      className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-4 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-sm font-medium appearance-none"
-                    >
-                      <option value="">Select a service...</option>
-                      <option value="residential">Residential Lighting / Wiring</option>
-                      <option value="commercial">Commercial / Industrial</option>
-                      <option value="emergency">24/7 Emergency Repair</option>
-                      <option value="panel">Panel Upgrade</option>
-                      <option value="ev">EV Charger Installation</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Project Details</label>
-                    <textarea
-                      value={formData.message}
-                      onChange={e => setFormData({ ...formData, message: e.target.value })}
-                      placeholder="Describe your project or issue..."
-                      rows={4}
-                      className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-4 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-sm font-medium resize-none"
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full bg-blue-600 text-white rounded-2xl py-5 font-black uppercase italic tracking-widest text-sm hover:bg-blue-700 active:scale-[0.98] transition-all shadow-xl shadow-blue-500/20 disabled:opacity-50 flex items-center justify-center gap-3"
-                  >
-                    {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Request Instant Quote'}
-                    <ArrowRight className="w-5 h-5" />
-                  </button>
-                  <p className="text-[10px] text-slate-400 text-center font-bold tracking-wider uppercase">
-                    🔒 Your information is 100% secure & never shared.
-                  </p>
-                </div>
-              )}
-            </form>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
+// ─── Contact Section Removed ──────────────────────────────────────────────────
 
 // ─── Main HomePage ────────────────────────────────────────────────────────────
 export default function HomePage() {
@@ -305,16 +141,6 @@ export default function HomePage() {
       opacity: 0, scale: 0.9, duration: 0.7, ease: 'back.out(1.5)', delay: 0.6,
     });
 
-    // ── Contact section ──
-    gsap.from('.contact-left', {
-      scrollTrigger: { trigger: '#contact', start: 'top 75%' },
-      opacity: 0, x: -50, duration: 1, ease: 'power3.out',
-    });
-    gsap.from('.contact-right', {
-      scrollTrigger: { trigger: '#contact', start: 'top 75%' },
-      opacity: 0, x: 50, duration: 1, ease: 'power3.out', delay: 0.1,
-    });
-
     // ── Footer ──
     gsap.from('.footer-content', {
       scrollTrigger: { trigger: '#footer', start: 'top 85%' },
@@ -339,7 +165,7 @@ export default function HomePage() {
       title: 'Residential Electrical',
       desc: 'Expert home wiring, smart lighting, panel upgrades, and safety inspections for Edmonton homes.',
       price: 'From $149',
-      img: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=2669&auto=format&fit=crop',
+      img: '/residential_electrical.png',
       tag: 'Residential',
       features: ['Wiring & Outlets', 'Panel Upgrades', 'Smart Lighting', 'Safety Inspection'],
     },
@@ -348,7 +174,7 @@ export default function HomePage() {
       title: 'Commercial Projects',
       desc: 'Full-scale electrical solutions for offices, retail spaces, and industrial facilities in Edmonton.',
       price: 'From $299',
-      img: 'https://images.unsplash.com/photo-1565008447742-97f6f38c985c?q=80&w=2789&auto=format&fit=crop',
+      img: '/commercial_electrical.png',
       tag: 'Commercial',
       features: ['Office Fit-outs', 'Industrial Wiring', 'Code Compliance', 'Load Analysis'],
     },
@@ -357,7 +183,7 @@ export default function HomePage() {
       title: 'Emergency Repairs',
       desc: '24/7 fast-response electrical troubleshooting. We arrive within 60 minutes anywhere in Edmonton.',
       price: 'From $199',
-      img: 'https://images.unsplash.com/photo-1544724569-5f546fd6f2b5?q=80&w=2669&auto=format&fit=crop',
+      img: '/emergency_electrical.png',
       tag: '24/7',
       features: ['60-Min Response', 'Power Outages', 'Hazard Repairs', 'Storm Damage'],
     },
@@ -406,43 +232,39 @@ export default function HomePage() {
     <div ref={pageRef} className="min-h-screen bg-[#FDFDFF] font-sans text-slate-900 overflow-x-hidden">
 
       {/* ── HERO ── */}
-      <section id="home" className="relative pt-28 pb-16 md:pt-36 md:pb-28 px-4 md:px-8 overflow-hidden">
-        {/* Background gradient blobs */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[120px] -z-10 translate-x-1/3 -translate-y-1/4" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-600/4 rounded-full blur-[100px] -z-10" />
+      <section id="home" className="relative min-h-[95vh] pt-32 pb-20 md:pt-40 md:pb-32 px-4 md:px-8 flex items-center justify-center overflow-hidden">
+        {/* Background ambient gradients */}
+        <div className="absolute top-0 right-0 w-[80vw] h-[80vw] max-w-[800px] max-h-[800px] bg-blue-500/10 rounded-full blur-[140px] -z-10 translate-x-1/3 -translate-y-1/3 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[60vw] h-[60vw] max-w-[600px] max-h-[600px] bg-indigo-500/10 rounded-full blur-[120px] -z-10 -translate-x-1/4 translate-y-1/4 pointer-events-none" />
+        
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] -z-10 mix-blend-overlay" />
 
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            <div className="text-center lg:text-left">
-              <div className="hero-badge inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 text-[10px] md:text-xs font-bold uppercase tracking-widest mb-6 border border-blue-100">
-                <Zap className="w-3.5 h-3.5" />
-                Licensed Master Electricians — Edmonton, AB
+        <div className="max-w-7xl mx-auto w-full relative z-10">
+          <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+            <div className="lg:col-span-7 text-center lg:text-left flex flex-col items-center lg:items-start">
+              <div className="hero-badge inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-white/60 backdrop-blur-md text-blue-700 text-[10px] md:text-xs font-black uppercase tracking-[0.2em] mb-8 border border-white/40 shadow-[0_8px_30px_rgba(37,99,235,0.08)]">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-600"></span>
+                </span>
+                Edmonton's Premier Electricians
               </div>
-              <h1 className="hero-title text-[2.6rem] sm:text-5xl md:text-[5.5rem] font-black text-slate-900 mb-6 leading-[1.05] tracking-[-0.03em]">
-                Quality Electrical<br />Solutions for<br />
-                <span className="text-blue-600">Edmonton Homes.</span>
+              <h1 className="hero-title text-[3rem] sm:text-6xl lg:text-[6.5rem] font-black text-slate-900 mb-8 leading-[0.95] tracking-[-0.04em] uppercase">
+                <span className="block italic text-transparent bg-clip-text bg-gradient-to-br from-slate-900 to-slate-600">Master</span>
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Electrical</span>
+                <span className="block italic text-transparent bg-clip-text bg-gradient-to-br from-slate-900 to-slate-600">Solutions.</span>
               </h1>
-              <p className="hero-subtitle text-base md:text-xl text-slate-500 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                Professional residential & commercial electrical services. From panel upgrades to 24/7 emergency repairs — we keep Edmonton powered safely.
+              <p className="hero-subtitle text-base sm:text-lg lg:text-xl text-slate-500 mb-12 max-w-xl leading-[1.8] font-medium">
+                Premium residential and commercial electrical services. From modern lighting design to 24/7 emergency troubleshooting — precision and safety guaranteed.
               </p>
-              <div className="hero-ctas flex flex-col sm:flex-row gap-4 mb-12 justify-center lg:justify-start">
+              <div className="hero-ctas flex flex-col sm:flex-row gap-5 w-full sm:w-auto justify-center lg:justify-start">
                 <a
                   href="tel:+17802979252"
-                  className="bg-blue-600 text-white px-8 md:px-10 py-4 md:py-5 rounded-full font-bold text-base md:text-lg hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/25 text-center flex items-center justify-center gap-2 group active:scale-95"
+                  className="bg-slate-900 text-white px-8 py-5 sm:py-6 rounded-[2rem] font-bold text-base sm:text-lg hover:bg-slate-800 transition-all shadow-[0_20px_40px_rgba(15,23,42,0.15)] text-center flex items-center justify-center gap-3 group active:scale-95 w-full sm:w-auto"
                 >
                   <Phone className="w-5 h-5 group-hover:rotate-12 transition-transform" />
                   Call Now — Free Quote
                 </a>
-                <button
-                  onClick={() => {
-                    const aiBtn = document.querySelector('.bottom-6.right-6 button') as HTMLButtonElement;
-                    if (aiBtn) aiBtn.click();
-                  }}
-                  className="bg-slate-900 text-white px-8 md:px-10 py-4 md:py-5 rounded-full font-bold text-base md:text-lg hover:bg-slate-800 transition-all text-center flex items-center justify-center gap-2 active:scale-95"
-                >
-                  <Sparkles className="w-5 h-5 text-blue-400" />
-                  Consult AI Expert
-                </button>
               </div>
               <div className="hero-trust flex flex-wrap gap-6 sm:gap-8 items-center justify-center lg:justify-start pt-8 border-t border-slate-100">
                 <div className="flex items-center gap-2">
@@ -462,27 +284,46 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="relative hero-img">
-              <div className="relative z-10">
-                <div className="rounded-[2.5rem] overflow-hidden shadow-2xl aspect-[16/10]">
+            <div className="lg:col-span-5 relative hero-img hidden sm:block">
+              <div className="relative z-10 w-full max-w-[500px] mx-auto lg:mx-0">
+                <div className="rounded-[3rem] overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.12)] aspect-[4/5] border-8 border-white">
                   <img
                     src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=2669&auto=format&fit=crop"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover scale-105"
                     alt="Professional Electrician in Edmonton"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent" />
                 </div>
-                <div className="hero-badge-float absolute -bottom-5 -left-5 bg-white p-5 rounded-[1.8rem] shadow-2xl border border-slate-50 flex items-center gap-4 z-20">
-                  <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25">
-                    <ShieldCheck className="text-white w-6 h-6" />
+                
+                {/* Floating UI Elements */}
+                <div className="hero-badge-float absolute -bottom-8 -left-8 md:-left-12 bg-white/90 backdrop-blur-xl p-6 rounded-[2rem] shadow-2xl border border-white flex items-center gap-5 z-20">
+                  <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+                    <ShieldCheck className="text-white w-7 h-7" />
                   </div>
                   <div>
-                    <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-0.5">Avg. Response</p>
-                    <p className="text-slate-900 font-black text-xl leading-none tracking-tight">Under 60 Min</p>
+                    <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-1">Response Time</p>
+                    <p className="text-slate-900 font-black text-2xl leading-none tracking-tight italic">&lt; 60 Min</p>
+                  </div>
+                </div>
+
+                <div className="absolute top-12 -right-8 bg-white/90 backdrop-blur-xl px-5 py-4 rounded-[1.5rem] shadow-2xl border border-white flex items-center gap-3 z-20">
+                  <div className="flex -space-x-2">
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-slate-200 overflow-hidden">
+                        <img src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="Client" className="w-full h-full object-cover" />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex flex-col">
+                    <div className="flex text-yellow-400">
+                      {[1,2,3,4,5].map(i => <Star key={i} className="w-3 h-3 fill-current" />)}
+                    </div>
+                    <span className="text-[9px] font-bold text-slate-500 uppercase">1.2k+ Reviews</span>
                   </div>
                 </div>
               </div>
-              <div className="absolute -top-12 -right-12 w-72 h-72 bg-blue-600/5 rounded-full blur-3xl -z-10" />
+              
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-blue-600/10 rounded-full blur-[80px] -z-10 pointer-events-none" />
             </div>
           </div>
         </div>
@@ -497,21 +338,25 @@ export default function HomePage() {
       </section>
 
       {/* ── STATS GRID ── */}
-      <section className="py-20 bg-slate-900 stats-grid">
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+      <section className="py-24 bg-slate-900 relative overflow-hidden stats-grid">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(37,99,235,0.15),_transparent_70%)]" />
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 mix-blend-overlay" />
+        
+        <div className="max-w-7xl mx-auto px-4 md:px-8 relative z-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
             {[
-              { id: 'stat-years', label: 'Years Experience', icon: <Award className="w-5 h-5" /> },
-              { id: 'stat-clients', label: 'Happy Clients', icon: <Star className="w-5 h-5" /> },
-              { id: 'stat-projects', label: 'Projects Done', icon: <Bolt className="w-5 h-5" /> },
-              { id: 'stat-rating', label: 'Google Rating', icon: <TrendingUp className="w-5 h-5" /> },
-            ].map(stat => (
-              <div key={stat.id} className="text-center">
-                <div className="w-10 h-10 bg-blue-600/20 text-blue-400 rounded-xl flex items-center justify-center mx-auto mb-4">
+              { id: 'stat-years', label: 'Years Experience', icon: <Award className="w-6 h-6" /> },
+              { id: 'stat-clients', label: 'Happy Clients', icon: <Star className="w-6 h-6" /> },
+              { id: 'stat-projects', label: 'Projects Done', icon: <Bolt className="w-6 h-6" /> },
+              { id: 'stat-rating', label: 'Google Rating', icon: <TrendingUp className="w-6 h-6" /> },
+            ].map((stat, i) => (
+              <div key={stat.id} className="relative group text-center p-8 rounded-[2rem] bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] transition-all duration-500 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="w-14 h-14 bg-blue-500/10 text-blue-400 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-500 border border-blue-500/20 shadow-[0_0_30px_rgba(37,99,235,0.2)]">
                   {stat.icon}
                 </div>
-                <div id={stat.id} className="text-4xl md:text-5xl font-black text-white tracking-tighter mb-2">0</div>
-                <p className="text-slate-500 text-[10px] font-bold uppercase tracking-[0.2em]">{stat.label}</p>
+                <div id={stat.id} className="text-4xl md:text-6xl font-black text-white tracking-tighter mb-3 drop-shadow-lg">0</div>
+                <p className="text-blue-200/70 text-[10px] md:text-xs font-bold uppercase tracking-[0.25em]">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -519,77 +364,92 @@ export default function HomePage() {
       </section>
 
       {/* ── LOGO CLOUD ── */}
-      <section className="py-16 bg-slate-50 border-b border-slate-100 logo-cloud overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <p className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] mb-10">
-            Trusted & Recognized By
-          </p>
-          <div className="flex flex-wrap justify-center md:justify-between items-center gap-8 md:gap-6">
-            {['YEG Home Builders', 'Alberta Safety Council', 'Master Electricians Assn.', 'Edmonton Chamber of Commerce'].map(name => (
-              <div key={name} className="logo-item text-lg md:text-xl font-black text-slate-300 tracking-tighter uppercase italic hover:text-slate-600 transition-colors cursor-default">
+      <section className="py-16 bg-white border-y border-slate-100 overflow-hidden relative">
+        <div className="absolute left-0 top-0 bottom-0 w-24 md:w-40 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-24 md:w-40 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 md:px-8 mb-10">
+          <div className="flex items-center justify-center gap-4">
+            <div className="h-px bg-slate-200 flex-1 max-w-[100px]" />
+            <p className="text-center text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-[0.3em]">
+              Certified Excellence & Trusted Partners
+            </p>
+            <div className="h-px bg-slate-200 flex-1 max-w-[100px]" />
+          </div>
+        </div>
+
+        <div className="animate-marquee gap-12 md:gap-24 px-8">
+          {[
+            'YEG Home Builders', 'Alberta Safety Council', 'Master Electricians Assn.', 'Edmonton Chamber of Commerce', 'Better Business Bureau',
+            'YEG Home Builders', 'Alberta Safety Council', 'Master Electricians Assn.', 'Edmonton Chamber of Commerce', 'Better Business Bureau'
+          ].map((name, idx) => (
+            <div key={idx} className="flex items-center gap-3 group cursor-default">
+              <ShieldCheck className="w-5 h-5 text-slate-300 group-hover:text-blue-500 transition-colors" />
+              <div className="text-lg md:text-xl font-black text-slate-300 tracking-tighter uppercase italic group-hover:text-slate-700 transition-colors whitespace-nowrap">
                 {name}
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </section>
 
       {/* ── SERVICES ── */}
-      <section id="services" className="py-24 md:py-36 px-4 md:px-8 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="services-header max-w-2xl mb-16 md:mb-24">
-            <div className="inline-block px-4 py-1.5 bg-blue-50 border border-blue-100 rounded-full text-blue-600 text-[10px] font-bold tracking-[0.2em] mb-6 uppercase">
+      <section id="services" className="py-24 md:py-36 px-4 md:px-8 bg-slate-50 relative">
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="services-header max-w-3xl mb-16 md:mb-24 mx-auto text-center">
+            <div className="inline-flex items-center justify-center px-4 py-1.5 bg-blue-100/50 border border-blue-200/50 rounded-full text-blue-700 text-[10px] font-black tracking-[0.2em] mb-6 uppercase">
               Our Services
             </div>
-            <h2 className="text-4xl md:text-6xl font-black text-slate-900 mb-6 tracking-[-0.03em] leading-[1.05]">
-              Certified Electrical Services<br />
-              <span className="text-blue-600 underline decoration-blue-200 underline-offset-8">in Edmonton.</span>
+            <h2 className="text-4xl md:text-6xl font-black text-slate-900 mb-6 tracking-[-0.03em] leading-[1.05] uppercase italic">
+              Electrical Expertise <br/>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">You Can Trust.</span>
             </h2>
-            <p className="text-base md:text-lg text-slate-500 font-medium leading-relaxed">
-              Every job handled with care — from small repairs to large-scale infrastructure. Fully committed to safety and local code compliance.
+            <p className="text-base md:text-lg text-slate-500 font-medium leading-relaxed max-w-2xl mx-auto">
+              Every job handled with precision and care. Fully committed to safety, aesthetic integration, and uncompromising local code compliance.
             </p>
           </div>
 
-          <div className="services-grid grid md:grid-cols-3 gap-8">
+          <div className="services-grid grid md:grid-cols-3 gap-6 lg:gap-8">
             {services.map((service, idx) => (
               <a
                 key={idx}
                 href="tel:+17802979252"
-                className="service-card group bg-white rounded-[2.5rem] border border-slate-100 overflow-hidden transition-all duration-500 hover:shadow-[0_30px_80px_rgba(0,0,0,0.08)] hover:-translate-y-3 flex flex-col"
+                className="service-card group bg-white rounded-[2.5rem] border border-slate-100 overflow-hidden transition-all duration-500 hover:shadow-[0_40px_100px_rgba(0,0,0,0.08)] hover:-translate-y-2 flex flex-col"
               >
-                <div className="relative aspect-[4/3] overflow-hidden">
+                <div className="relative aspect-[4/3] overflow-hidden m-3 rounded-[2rem]">
                   <img
                     src={service.img}
                     alt={service.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest text-blue-600">
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-40 transition-opacity duration-500" />
+                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest text-slate-900 border border-white/20 shadow-sm">
                     {service.tag}
                   </div>
-                  <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0">
-                    <div className="flex flex-wrap gap-1.5">
+                  <div className="absolute bottom-4 left-4 right-4 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                    <div className="flex flex-wrap gap-2">
                       {service.features.map(f => (
-                        <span key={f} className="bg-white/90 backdrop-blur-sm text-slate-900 text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
-                          {f}
-                        </span>
+                         <span key={f} className="bg-white/90 backdrop-blur-md text-slate-900 text-[9px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider border border-white/20 shadow-sm">
+                           {f}
+                         </span>
                       ))}
                     </div>
                   </div>
                 </div>
-                <div className="p-8 flex flex-col flex-1">
-                  <div className="flex justify-between items-start mb-5">
-                    <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center">
+                <div className="p-8 flex flex-col flex-1 bg-white">
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-500">
                       {service.icon}
                     </div>
                     <span className="text-blue-600 font-black text-lg">{service.price}</span>
                   </div>
-                  <h3 className="text-xl font-black mb-3 group-hover:text-blue-600 transition-colors uppercase italic tracking-tight">{service.title}</h3>
-                  <p className="text-slate-500 font-medium leading-relaxed flex-1 text-sm">{service.desc}</p>
-                  <div className="pt-6 mt-4 border-t border-slate-50 flex items-center justify-between">
+                  <h3 className="text-2xl font-black mb-3 text-slate-900 uppercase italic tracking-tight">{service.title}</h3>
+                  <p className="text-slate-500 font-medium leading-relaxed flex-1 text-sm mb-8">{service.desc}</p>
+                  
+                  <div className="pt-6 border-t border-slate-100 flex items-center justify-between mt-auto group-hover:border-blue-100 transition-colors">
                     <span className="text-slate-900 font-bold uppercase tracking-widest text-[10px]">Book Professional</span>
-                    <div className="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white transform translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300">
-                      <ArrowRight className="w-4 h-4" />
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-slate-50 text-slate-400 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                      <ArrowRight className="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform" />
                     </div>
                   </div>
                 </div>
@@ -600,45 +460,52 @@ export default function HomePage() {
       </section>
 
       {/* ── ABOUT ── */}
-      <section id="about" className="py-24 md:py-36 px-4 md:px-8 bg-slate-50/50">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+      <section id="about" className="py-24 md:py-40 px-4 md:px-8 bg-[#FDFDFF] relative overflow-hidden">
+        <div className="absolute top-1/2 left-0 w-96 h-96 bg-blue-100/50 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2 -z-10" />
+        
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 lg:gap-24 items-center relative z-10">
           {/* Image grid */}
-          <div className="grid grid-cols-2 gap-4 md:gap-6 order-2 lg:order-1">
+          <div className="grid grid-cols-2 gap-4 md:gap-6 order-2 lg:order-1 relative">
+            <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/10 to-transparent rounded-[3rem] -m-6 -z-10 blur-2xl" />
             <div className="space-y-4 md:space-y-6 pt-12 md:pt-20">
-              <div className="about-img-1 h-[220px] md:h-[350px] rounded-[2.5rem] overflow-hidden shadow-2xl relative group">
+              <div className="about-img-1 h-[240px] md:h-[380px] rounded-[2.5rem] overflow-hidden shadow-2xl relative group border-4 border-white">
                 <img
                   src="https://images.unsplash.com/photo-1558402529-d2638a7023e9?q=80&w=2670&auto=format&fit=crop"
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
+                  className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105"
                   alt="Smart home setup"
                 />
+                <div className="absolute inset-0 bg-blue-600/20 group-hover:bg-transparent transition-colors duration-500" />
               </div>
-              <div className="about-img-1 bg-slate-900 p-8 rounded-[2rem] text-center text-white shadow-xl">
-                <p className="text-4xl md:text-5xl font-black text-blue-400 mb-1">15+</p>
-                <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/40">Years Experience</p>
+              <div className="about-img-1 bg-gradient-to-br from-slate-900 to-slate-800 p-8 rounded-[2rem] text-center text-white shadow-2xl border border-slate-700">
+                <p className="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400 mb-2">15+</p>
+                <p className="text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] text-slate-400">Years Mastery</p>
               </div>
             </div>
             <div className="space-y-4 md:space-y-6">
-              <div className="about-img-2 bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm">
-                <p className="text-4xl md:text-5xl font-black text-blue-600 mb-1">1.2k+</p>
-                <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">Happy Clients</p>
+              <div className="about-img-2 bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] border border-white shadow-xl relative overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <p className="text-4xl md:text-6xl font-black text-blue-600 mb-2 relative z-10">1.2k+</p>
+                <p className="text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] text-slate-500 relative z-10">Local Clients</p>
               </div>
-              <div className="about-img-2 h-[220px] md:h-[340px] rounded-[2.5rem] overflow-hidden shadow-2xl border border-slate-100 relative group">
+              <div className="about-img-2 h-[240px] md:h-[360px] rounded-[2.5rem] overflow-hidden shadow-2xl border-4 border-white relative group">
                 <img
                   src="https://images.unsplash.com/photo-1544724569-5f546fd6f2b5?q=80&w=2669&auto=format&fit=crop"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
                   alt="Electric panel"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent opacity-60" />
               </div>
             </div>
           </div>
 
           {/* Text content */}
-          <div className="about-text order-1 lg:order-2 text-center lg:text-left lg:pl-6">
-            <div className="inline-block px-4 py-1.5 bg-blue-50 border border-blue-100 rounded-full text-blue-600 text-[10px] font-bold tracking-[0.2em] mb-6 uppercase">
+          <div className="about-text order-1 lg:order-2 text-center lg:text-left lg:pl-10">
+            <div className="inline-flex items-center justify-center px-4 py-1.5 bg-blue-50 border border-blue-100 rounded-full text-blue-600 text-[10px] font-bold tracking-[0.2em] mb-6 uppercase shadow-sm">
               Local Edmonton Experts
             </div>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-10 tracking-[-0.03em] uppercase italic leading-[0.95] max-w-2xl mx-auto lg:mx-0">
-              Why Edmonton Residents<br /> Trust <span className="text-blue-600 non-italic">Haq Electrics.</span>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-10 tracking-[-0.03em] uppercase italic leading-[1] max-w-2xl mx-auto lg:mx-0">
+              The Standard for <br/>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 non-italic">Electrical Safety.</span>
             </h2>
             <div className="about-features space-y-4">
               {[
@@ -660,23 +527,24 @@ export default function HomePage() {
               ].map((item, idx) => (
                 <div
                   key={idx}
-                  className="about-feature flex flex-col lg:flex-row gap-5 items-center lg:items-start p-6 rounded-[1.8rem] hover:bg-white hover:shadow-xl border border-transparent hover:border-slate-50 transition-all group cursor-default"
+                  className="about-feature flex flex-col lg:flex-row gap-5 items-center lg:items-start p-6 rounded-[2rem] bg-white border border-slate-100 hover:border-blue-100 hover:shadow-[0_20px_40px_rgba(37,99,235,0.06)] transition-all duration-300 group cursor-default"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-all duration-400">
+                  <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white group-hover:shadow-lg group-hover:shadow-blue-500/30 transition-all duration-500">
                     {item.icon}
                   </div>
                   <div>
-                    <h4 className="text-lg font-black mb-1.5 uppercase italic">{item.title}</h4>
+                    <h4 className="text-xl font-black mb-2 uppercase italic text-slate-900 group-hover:text-blue-600 transition-colors">{item.title}</h4>
                     <p className="text-slate-500 font-medium leading-relaxed text-sm max-w-md mx-auto lg:mx-0">{item.desc}</p>
                   </div>
                 </div>
               ))}
             </div>
             <div className="mt-12 pt-10 border-t border-slate-100 flex flex-col sm:flex-row items-center gap-6 justify-center lg:justify-start">
-              <a href="tel:+17802979252" className="bg-blue-600 text-white px-10 py-5 rounded-full font-bold text-lg hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20 active:scale-95">
+              <a href="tel:+17802979252" className="bg-slate-900 text-white px-10 py-5 rounded-full font-bold text-lg hover:bg-slate-800 transition-all shadow-[0_20px_40px_rgba(15,23,42,0.15)] active:scale-95 group flex items-center gap-3">
                 Talk to a Professional
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </a>
-              <div className="flex items-center gap-3 text-slate-400 text-sm font-bold uppercase tracking-widest">
+              <div className="flex items-center gap-3 text-slate-400 text-xs font-bold uppercase tracking-widest bg-slate-50 px-5 py-3 rounded-full border border-slate-100">
                 <ShieldCheck className="w-5 h-5 text-blue-600" />
                 Alberta Certified
               </div>
@@ -687,48 +555,47 @@ export default function HomePage() {
 
       {/* ── HORIZONTAL TESTIMONIALS ── */}
       <section className="testimonials-pin bg-white overflow-hidden">
-        <div className="testimonials-viewport w-full overflow-hidden" style={{ height: '100vh' }}>
-          <div className="h-full flex flex-col justify-center px-8 pt-0">
-            <div className="max-w-7xl mx-auto w-full">
-              <div className="mb-10 flex items-end justify-between">
-                <div>
-                  <div className="inline-block px-4 py-1.5 bg-blue-50 border border-blue-100 rounded-full text-blue-600 text-[10px] font-bold tracking-[0.2em] mb-4 uppercase">
-                    Proven Excellence
-                  </div>
-                  <h2 className="text-4xl md:text-5xl font-black tracking-[-0.03em] uppercase italic leading-tight">
-                    What Edmonton Clients Say
-                  </h2>
+        <div className="testimonials-viewport w-full h-[100vh] flex flex-col justify-center overflow-hidden py-16">
+          <div className="px-4 md:px-8 max-w-7xl mx-auto w-full mb-10 md:mb-16">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+              <div>
+                <div className="inline-flex items-center justify-center px-4 py-1.5 bg-blue-50 border border-blue-100 rounded-full text-blue-600 text-[10px] font-bold tracking-[0.2em] mb-4 uppercase">
+                  Proven Excellence
                 </div>
-                <div className="hidden md:flex items-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-widest">
-                  <span>Scroll to see more</span>
-                  <ArrowRight className="w-4 h-4" />
-                </div>
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-[-0.03em] uppercase italic leading-[1] text-slate-900">
+                  What Edmonton<br />
+                  <span className="text-blue-600 non-italic">Clients Say.</span>
+                </h2>
+              </div>
+              <div className="hidden md:flex items-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-widest bg-slate-50 px-5 py-3 rounded-full border border-slate-100 shrink-0">
+                <span>Scroll to see more</span>
+                <ArrowRight className="w-4 h-4" />
               </div>
             </div>
           </div>
 
           {/* Scrolling track */}
-          <div className="testimonials-track flex gap-6 px-8 pb-8 w-max" style={{ marginTop: '-3rem' }}>
+          <div className="testimonials-track flex gap-6 px-4 md:px-8 pb-8 w-max">
             {testimonials.map((t, idx) => (
               <div
                 key={idx}
-                className="w-[380px] md:w-[440px] shrink-0 bg-slate-50 border border-slate-100 rounded-[2.5rem] p-8 md:p-10 hover:bg-white hover:shadow-2xl transition-all group flex flex-col"
+                className="w-[340px] sm:w-[380px] md:w-[460px] shrink-0 bg-white border border-slate-100 rounded-[2.5rem] p-8 md:p-10 hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] hover:-translate-y-2 transition-all duration-500 group flex flex-col shadow-sm"
               >
-                <div className="flex gap-1 mb-5">
+                <div className="flex gap-1 mb-6">
                   {[...Array(t.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                    <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400 drop-shadow-sm" />
                   ))}
                 </div>
-                <p className="text-lg font-bold text-slate-900 leading-snug mb-8 italic flex-1">
+                <p className="text-lg md:text-xl font-bold text-slate-900 leading-snug mb-8 italic flex-1">
                   "{t.quote}"
                 </p>
-                <div className="pt-6 border-t border-slate-200 flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center font-black text-blue-600 text-sm">
+                <div className="pt-6 border-t border-slate-100 flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center font-black text-blue-600 text-lg group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
                     {t.name[0]}
                   </div>
                   <div>
                     <h4 className="font-black text-slate-900 uppercase text-xs tracking-wider">{t.name}</h4>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{t.role}</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">{t.role}</p>
                   </div>
                 </div>
               </div>
@@ -736,9 +603,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* ── CONTACT ── */}
-      <ContactSection />
 
       {/* ── CTA ── */}
       <section className="cta-section py-32 md:py-48 px-4 md:px-8 bg-slate-900 relative overflow-hidden">
@@ -770,13 +634,6 @@ export default function HomePage() {
             >
               Call Us Now
               <Phone className="w-7 h-7 group-hover:rotate-12 transition-transform" />
-            </a>
-            <a
-              href="#contact"
-              className="bg-white/10 backdrop-blur-sm text-white border border-white/20 px-12 md:px-16 py-5 md:py-7 rounded-full font-black text-xl md:text-2xl hover:bg-white/20 transition-all flex items-center justify-center gap-3 active:scale-95"
-            >
-              Request a Quote
-              <ArrowRight className="w-7 h-7" />
             </a>
           </div>
         </div>

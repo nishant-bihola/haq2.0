@@ -1,7 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { createServer as createViteServer } from 'vite';
 import path from 'path';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import dotenv from 'dotenv';
 import admin from 'firebase-admin';
 import { getFirestore } from 'firebase-admin/firestore';
@@ -11,45 +10,26 @@ import firebaseConfig from './firebase-applet-config.json' assert { type: 'json'
 dotenv.config();
 
 // ─── Firebase ────────────────────────────────────────────────────────────────
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.applicationDefault(),
-    projectId: firebaseConfig.projectId,
-  });
+try {
+  if (!admin.apps.length) {
+    admin.initializeApp({
+      credential: admin.credential.applicationDefault(),
+      projectId: firebaseConfig.projectId,
+    });
+    console.log('✅ Firebase Admin initialized');
+  }
+} catch (error) {
+  console.error('❌ Firebase Admin init failed:', error);
+  console.log('Attempting to initialize without credentials (GCP environment)...');
+  try {
+    if (!admin.apps.length) {
+      admin.initializeApp({ projectId: firebaseConfig.projectId });
+    }
+  } catch (err) {
+    console.error('❌ Firebase fallback failed:', err);
+  }
 }
 const db = getFirestore(firebaseConfig.firestoreDatabaseId);
-
-// ─── Gemini AI ───────────────────────────────────────────────────────────────
-let genAI: GoogleGenerativeAI | null = null;
-function getModel() {
-  if (!genAI) {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey || apiKey === 'MY_GEMINI_API_KEY' || apiKey === 'YOUR_API_KEY') {
-      throw new Error('GEMINI_API_KEY is not configured. Please set it in your environment.');
-    }
-    genAI = new GoogleGenerativeAI(apiKey);
-  }
-  return genAI.getGenerativeModel({
-    model: 'gemini-1.5-flash',
-    systemInstruction: `You are the AI Electrical Expert for Haq Electrics, a premier electrical service provider in Edmonton, Alberta.
-Your tone is professional, safety-oriented, and helpful.
-
-Key Responsibilities:
-1. EMERGENCY HANDLING: If a user mentions sparks, smoke, fire, flooding near outlets, or burning smell — IMMEDIATELY tell them to:
-   - Stay away from the affected area.
-   - CALL US at 1-780-297-9252 (Emergency Line).
-   - If there is active fire, call 911 first.
-   - Do NOT attempt repairs yourself.
-
-2. SERVICE GUIDANCE: We provide Panel Upgrades, EV Charging Installation, Residential & Commercial Wiring, Lighting Design, 24/7 Emergency Support.
-
-3. LEAD GENERATION: Encourage users to book a consultation or fill out our contact form. If a user asks for a quote, ask for their phone number or name so we can call them.
-
-4. SAFETY ADVICE: Provide standard tips (no circuit overloading, test GFCIs monthly) but state that complex work requires a certified electrician.
-
-Keep responses concise. Focus on Edmonton and surrounding area service. Always end with a way to contact us.`,
-  });
-}
 
 // ─── Admin Auth ───────────────────────────────────────────────────────────────
 const adminSessions = new Set<string>();
@@ -99,115 +79,12 @@ setInterval(() => {
 // ─── Server ───────────────────────────────────────────────────────────────────
 async function startServer() {
   const app = express();
-  const PORT = Number(process.env.PORT) || 3000;
+  const PORT = Number(process.env.PORT) || 3001;
 
   app.use(express.json({ limit: '1mb' }));
   app.set('trust proxy', 1);
 
   // ── PUBLIC API ────────────────────────────────────────────────────────────
-
-  app.post('/api/contact', rateLimit(10, 60_000), async (req, res) => {
-    const { name, email, phone, message, service } = req.body;
-
-    if (!name?.trim() || !phone?.trim()) {
-      res.status(400).json({ error: 'Name and phone are required.' });
-      return;
-    }
-
-    try {
-      await db.collection('leads').add({
-        name: name.trim(),
-        email: email?.trim() || null,
-        phone: phone.trim(),
-        message: message?.trim() || null,
-        service: service || null,
-        source: 'Form',
-        status: 'new',
-        notes: null,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      });
-      res.status(200).json({ success: true, message: 'Lead saved successfully' });
-    } catch (error) {
-      console.error('Error saving lead:', error);
-      res.status(500).json({ error: 'Failed to save lead' });
-    }
-  });
-
-  app.post('/api/ai/chat', rateLimit(30, 60_000), async (req, res) => {
-    const { message, history, sessionId } = req.body;
-
-    if (!message?.trim()) {
-      res.status(400).json({ error: 'Message is required.' });
-      return;
-    }
-
-    try {
-      const model = getModel();
-      const chat = model.startChat({
-        history: history || [],
-        generationConfig: { maxOutputTokens: 600 },
-      });
-
-      const result = await chat.sendMessage(message);
-      const text = result.response.text();
-
-      if (sessionId) {
-        const chatRef = db.collection('chats').doc(sessionId);
-        await chatRef.set(
-          { lastMessage: text.substring(0, 200), updatedAt: admin.firestore.FieldValue.serverTimestamp() },
-          { merge: true }
-        );
-        const msgRef = chatRef.collection('messages');
-        await msgRef.add({ role: 'user', text: message, timestamp: admin.firestore.FieldValue.serverTimestamp() });
-        await msgRef.add({ role: 'model', text, timestamp: admin.firestore.FieldValue.serverTimestamp() });
-      }
-
-      res.json({ text });
-    } catch (error) {
-      console.error('AI Chat Error:', error);
-      res.status(500).json({ error: 'Failed to generate AI response' });
-    }
-  });
-
-  // AI-powered quote estimation
-  app.post('/api/quote/estimate', rateLimit(5, 60_000), async (req, res) => {
-    const { service, description, size } = req.body;
-
-    if (!service) {
-      res.status(400).json({ error: 'Service type is required.' });
-      return;
-    }
-
-    try {
-      const model = getModel();
-      const prompt = `As Haq Electrics' pricing assistant in Edmonton, Alberta, provide a rough 2025 market estimate for:
-Service: ${service}
-Description: ${description || 'Standard installation'}
-Size/Scope: ${size || 'Typical residential'}
-
-Respond ONLY with valid JSON:
-{
-  "low": number,
-  "high": number,
-  "breakdown": [{"item": string, "cost": string}],
-  "notes": string,
-  "duration": string,
-  "disclaimer": string
-}`;
-
-      const result = await model.generateContent(prompt);
-      const text = result.response.text();
-      const jsonMatch = text.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        res.json(JSON.parse(jsonMatch[0]));
-      } else {
-        res.status(500).json({ error: 'Could not generate estimate' });
-      }
-    } catch (error) {
-      console.error('Quote estimation error:', error);
-      res.status(500).json({ error: 'Failed to generate estimate' });
-    }
-  });
 
   // ── ADMIN AUTH ────────────────────────────────────────────────────────────
   app.post('/api/admin/login', rateLimit(5, 60_000), (req, res) => {

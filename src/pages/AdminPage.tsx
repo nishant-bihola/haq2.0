@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, FormEvent } from 'react';
 import {
   LayoutDashboard, Users, MessageSquare, LogOut, RefreshCw,
   TrendingUp, Phone, Mail, Calendar, ChevronDown, Search,
@@ -35,6 +35,13 @@ interface ChatSession {
   lastMessage: string;
   updatedAt: { _seconds: number } | null;
   messageCount?: number;
+}
+
+interface ChatMessage {
+  id: string;
+  role: 'user' | 'model';
+  text: string;
+  timestamp: { _seconds: number } | null;
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -258,6 +265,83 @@ function LeadModal({
   );
 }
 
+function ChatModal({
+  chatId,
+  token,
+  onClose,
+}: {
+  chatId: string;
+  token: string;
+  onClose: () => void;
+}) {
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const res = await fetch(`/api/admin/chats/${chatId}/messages`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setMessages(data.messages);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMessages();
+  }, [chatId, token]);
+
+  return (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div
+        className="bg-white rounded-3xl w-full max-w-2xl h-[80vh] shadow-2xl overflow-hidden flex flex-col"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="bg-slate-900 p-6 text-white flex justify-between items-center shrink-0">
+          <div>
+            <h3 className="font-black text-lg italic uppercase tracking-tight">Chat History</h3>
+            <p className="text-slate-400 text-xs mt-0.5 font-mono">{chatId}</p>
+          </div>
+          <button onClick={onClose} className="hover:bg-white/10 p-2 rounded-full transition-colors">
+            <XCircle className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50">
+          {loading ? (
+            <div className="flex items-center justify-center h-full">
+              <RefreshCw className="w-8 h-8 text-blue-600 animate-spin" />
+            </div>
+          ) : messages.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-slate-400 font-bold">No messages found for this session.</p>
+            </div>
+          ) : (
+            messages.map((msg, i) => (
+              <div key={i} className={cn("flex flex-col", msg.role === 'user' ? "items-end" : "items-start")}>
+                <div className={cn(
+                  "p-4 rounded-2xl text-sm max-w-[85%] shadow-sm",
+                  msg.role === 'user'
+                    ? "bg-slate-900 text-white rounded-tr-none"
+                    : "bg-white border border-slate-100 text-slate-700 rounded-tl-none"
+                )}>
+                  {msg.text}
+                </div>
+                <span className="text-[9px] text-slate-400 font-bold mt-1 px-1">
+                  {formatDate(msg.timestamp)}
+                </span>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Admin Dashboard ─────────────────────────────────────────────────────
 export default function AdminPage() {
   const [token, setToken] = useState<string>(() => sessionStorage.getItem('haq_admin_token') || '');
@@ -267,6 +351,7 @@ export default function AdminPage() {
   const [chats, setChats] = useState<ChatSession[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+  const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [serviceFilter, setServiceFilter] = useState('all');
@@ -479,16 +564,16 @@ export default function AdminPage() {
                     Leads by Service
                   </h3>
                   <div className="space-y-3">
-                    {Object.entries(stats.byService).sort((a, b) => b[1] - a[1]).map(([service, count]) => {
-                      const max = Math.max(...Object.values(stats.byService));
-                      const pct = max > 0 ? (count / max) * 100 : 0;
+                    {Object.entries(stats.byService).sort((a, b) => (b[1] as number) - (a[1] as number)).map(([service, count]) => {
+                      const max = Math.max(...Object.values(stats.byService).map(v => v as number));
+                      const pct = max > 0 ? ((count as number) / max) * 100 : 0;
                       return (
                         <div key={service} className="flex items-center gap-3">
                           <span className="text-xs font-bold text-slate-500 w-28 shrink-0">{SERVICE_LABELS[service] || service}</span>
                           <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
                             <div className="h-full bg-blue-600 rounded-full transition-all duration-700" style={{ width: `${pct}%` }} />
                           </div>
-                          <span className="text-xs font-black text-slate-700 w-6 text-right">{count}</span>
+                          <span className="text-xs font-black text-slate-700 w-6 text-right">{count as number}</span>
                         </div>
                       );
                     })}
@@ -669,8 +754,12 @@ export default function AdminPage() {
               <p className="text-xs text-slate-400 font-medium">{chats.length} AI chat sessions</p>
               <div className="space-y-3">
                 {chats.map(chat => (
-                  <div key={chat.id} className="bg-white rounded-2xl border border-slate-100 p-5 flex items-center gap-4 hover:shadow-md transition-all">
-                    <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0">
+                  <button
+                    key={chat.id}
+                    onClick={() => setSelectedChatId(chat.id)}
+                    className="w-full text-left bg-white rounded-2xl border border-slate-100 p-5 flex items-center gap-4 hover:shadow-md hover:border-blue-200 transition-all group"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                       <MessageSquare className="w-5 h-5" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -678,7 +767,8 @@ export default function AdminPage() {
                       <p className="text-slate-400 text-xs mt-1 line-clamp-1 italic">"{chat.lastMessage}"</p>
                       <p className="text-slate-300 text-[10px] mt-1">{formatDate(chat.updatedAt)}</p>
                     </div>
-                  </div>
+                    <Eye className="w-4 h-4 text-slate-300 group-hover:text-blue-600 transition-colors" />
+                  </button>
                 ))}
                 {chats.length === 0 && (
                   <div className="text-center py-16 bg-white rounded-2xl border border-slate-100">
@@ -699,6 +789,15 @@ export default function AdminPage() {
           token={token}
           onClose={() => setSelectedLead(null)}
           onUpdate={handleUpdateLead}
+        />
+      )}
+
+      {/* Chat Modal */}
+      {selectedChatId && (
+        <ChatModal
+          chatId={selectedChatId}
+          token={token}
+          onClose={() => setSelectedChatId(null)}
         />
       )}
     </div>

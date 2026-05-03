@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import AIChatAssistant from './components/AIChatAssistant';
 import ScrollProgress from './components/ScrollProgress';
 import HomePage from './pages/HomePage';
 import AdminPage from './pages/AdminPage';
@@ -11,7 +10,6 @@ function MainLayout() {
       <ScrollProgress />
       <Navbar />
       <Outlet />
-      <AIChatAssistant />
     </>
   );
 }
