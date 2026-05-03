@@ -120,7 +120,7 @@ export default function HomePage() {
         {/* Background video + overlays */}
         <div className="absolute inset-0 z-0">
           <video
-            className="w-full h-full object-cover object-center opacity-70 scale-105"
+            className="w-full h-full object-cover object-center opacity-90 scale-105"
             src="/hero.mp4"
             autoPlay
             muted
@@ -128,8 +128,8 @@ export default function HomePage() {
             playsInline
             aria-hidden="true"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#06101c]/80 via-[#06101c]/50 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#06101c]/60 via-transparent to-[#06101c]/30" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#06101c]/70 via-[#06101c]/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#06101c]/40 via-transparent to-[#06101c]/20" />
         </div>
 
         {/* Glow blobs */}
