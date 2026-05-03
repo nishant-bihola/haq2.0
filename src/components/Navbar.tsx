@@ -30,7 +30,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <a href="#home" className="transition-transform active:scale-95">
           <Logo
-            className="h-8 sm:h-10 shrink-0"
+            className="shrink-0"
             textClassName={isScrolled ? 'text-slate-900' : 'text-white'}
           />
         </a>

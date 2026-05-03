@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { motion } from 'motion/react';
 import {
   Zap, ShieldCheck, Clock, Phone, ArrowRight, CheckCircle2,
-  Building2, Home, Star, Award, TrendingUp, Bolt,
+  Building2, Home, Star, Award, TrendingUp, Bolt, MapPin,
 } from 'lucide-react';
 import { gsap, ScrollTrigger, useGSAP } from '../lib/gsap';
 import Logo from '../components/Logo';
@@ -213,9 +213,9 @@ export default function HomePage() {
                 {/* Reviews badge */}
                 <div className="absolute top-8 -right-4 md:-right-6 bg-white/[0.07] backdrop-blur-xl px-3.5 py-2.5 rounded-xl border border-white/10 flex items-center gap-2.5 z-20">
                   <div className="flex -space-x-1.5">
-                    {[11, 12, 13].map(i => (
-                      <div key={i} className="w-6 h-6 rounded-full border border-white/20 bg-slate-700 overflow-hidden">
-                        <img src={`https://i.pravatar.cc/60?img=${i}`} alt="" className="w-full h-full object-cover" />
+                    {['S','M','R'].map((initial, i) => (
+                      <div key={i} className="w-6 h-6 rounded-full border border-white/20 bg-blue-700 flex items-center justify-center text-white font-black text-[8px]">
+                        {initial}
                       </div>
                     ))}
                   </div>
@@ -612,8 +612,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ──────────────────────── CTA ──────────────────────── */}
-      <section className="cta-section py-24 md:py-36 px-4 md:px-8 bg-slate-900 relative overflow-hidden">
+      {/* ──────────────────────── CTA / CONTACT ──────────────────────── */}
+      <section id="contact" className="cta-section py-24 md:py-36 px-4 md:px-8 bg-slate-900 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(61,80,191,0.25),_transparent_55%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(61,80,191,0.12),_transparent_55%)]" />
         <div className="max-w-4xl mx-auto text-center relative z-10">
@@ -636,12 +636,32 @@ export default function HomePage() {
           >
             One call. One team. One standard — the best in Edmonton. Get your free quote in 60 seconds.
           </motion.p>
+          {/* Contact quick-links */}
+          <motion.div
+            className="flex flex-col sm:flex-row gap-5 justify-center mb-10"
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: DUR, delay: 0.18, ease: EASE }}
+          >
+            {[
+              { icon: <Phone className="w-4 h-4 text-blue-400" />, text: '1-780-297-9252', href: 'tel:+17802979252' },
+              { icon: <MapPin className="w-4 h-4 text-blue-400" />, text: 'Edmonton, AB — All Areas', href: '#home' },
+              { icon: <Clock className="w-4 h-4 text-blue-400" />, text: '24/7 Emergency Response', href: 'tel:+17802979252' },
+            ].map(item => (
+              <a key={item.text} href={item.href} className="flex items-center gap-2 text-white/50 text-sm font-medium hover:text-white/80 transition-colors justify-center">
+                {item.icon}
+                <span>{item.text}</span>
+              </a>
+            ))}
+          </motion.div>
+
           <motion.div
             className="flex flex-col sm:flex-row gap-3 justify-center items-center"
             initial={{ opacity: 0, scale: 0.97 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: DUR, delay: 0.24, ease: EASE }}
+            transition={{ duration: DUR, delay: 0.28, ease: EASE }}
           >
             <a
               href="tel:+17802979252"
@@ -677,7 +697,12 @@ export default function HomePage() {
             <div>
               <h4 className="font-black mb-4 text-blue-500 uppercase tracking-widest text-[9px]">Navigation</h4>
               <ul className="space-y-2.5">
-                {[{name:'Home',href:'#home'},{name:'Services',href:'#services'},{name:'About',href:'#about'},{name:'Admin',href:'/admin'}].map(l => (
+                {[
+                  {name:'Home',href:'#home'},
+                  {name:'Services',href:'#services'},
+                  {name:'About Us',href:'#about'},
+                  {name:'Contact',href:'#contact'},
+                ].map(l => (
                   <li key={l.name}><a href={l.href} className="text-slate-400 hover:text-white transition-colors font-medium text-sm">{l.name}</a></li>
                 ))}
               </ul>
@@ -685,14 +710,25 @@ export default function HomePage() {
             <div>
               <h4 className="font-black mb-4 text-blue-500 uppercase tracking-widest text-[9px]">Services</h4>
               <ul className="space-y-2.5">
-                {['Residential Wiring','Commercial Fit-outs','24/7 Emergency','Panel Upgrades','EV Charger Install','Safety Inspections'].map(s => (
-                  <li key={s} className="text-slate-400 text-sm font-medium hover:text-white transition-colors cursor-default">{s}</li>
+                {[
+                  { name: 'Residential Wiring', href: '#services' },
+                  { name: 'Commercial Fit-outs', href: '#services' },
+                  { name: '24/7 Emergency', href: 'tel:+17802979252' },
+                  { name: 'Panel Upgrades', href: '#services' },
+                  { name: 'EV Charger Install', href: '#services' },
+                  { name: 'Safety Inspections', href: '#contact' },
+                ].map(s => (
+                  <li key={s.name}>
+                    <a href={s.href} className="text-slate-400 text-sm font-medium hover:text-white transition-colors">
+                      {s.name}
+                    </a>
+                  </li>
                 ))}
               </ul>
             </div>
           </div>
           <div className="pt-7 border-t border-white/[0.05] flex flex-col md:flex-row justify-between items-center gap-3 text-slate-600 text-[10px] font-bold uppercase tracking-[0.18em] text-center">
-            <p>&copy; 2025 Haq Electrics Ltd. &middot; Edmonton, Alberta</p>
+            <p>&copy; 2026 Haq Electrics Ltd. &middot; Edmonton, Alberta</p>
             <p>Master Electricians &middot; Licensed &middot; Insured &middot; Alberta Safety Codes</p>
           </div>
         </div>
