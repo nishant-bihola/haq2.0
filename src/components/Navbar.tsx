@@ -22,14 +22,17 @@ export default function Navbar() {
 
   return (
     <nav className={cn(
-      "fixed top-0 w-full z-50 transition-all duration-500 px-4 md:px-8 py-4 sm:py-5",
+      "fixed top-0 w-full z-50 transition-all duration-500 px-4 md:px-8",
       isScrolled
-        ? "bg-white/95 backdrop-blur-md shadow-sm py-3 border-b border-slate-100"
-        : "bg-transparent"
+        ? "bg-white/97 backdrop-blur-xl shadow-sm py-3 border-b border-slate-100"
+        : "bg-transparent py-5 sm:py-6"
     )}>
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <a href="#home" className="transition-transform active:scale-95">
-          <Logo className="h-8 sm:h-10 shrink-0" />
+          <Logo
+            className="h-8 sm:h-10 shrink-0"
+            textClassName={isScrolled ? 'text-slate-900' : 'text-white'}
+          />
         </a>
 
         {/* Desktop Nav */}
@@ -39,7 +42,10 @@ export default function Navbar() {
               <a
                 key={link.name}
                 href={link.href}
-                className="text-slate-600 hover:text-blue-600 text-[13px] font-bold transition-colors uppercase tracking-wider"
+                className={cn(
+                  "text-[13px] font-bold transition-colors uppercase tracking-wider",
+                  isScrolled ? "text-slate-600 hover:text-blue-600" : "text-white/70 hover:text-white"
+                )}
               >
                 {link.name}
               </a>
@@ -60,9 +66,10 @@ export default function Navbar() {
         <div className="flex items-center gap-2 lg:hidden">
           <a
             href="tel:+17802979252"
+            aria-label="Call (780) 297-9252"
             className="p-3 bg-blue-600 text-white rounded-full shadow-lg shadow-blue-500/20 active:scale-90 transition-transform"
           >
-            <Phone className="w-5 h-5" />
+            <Phone className="w-5 h-5" aria-hidden="true" />
           </a>
           <motion.button
             className="p-2 text-slate-900 hover:bg-slate-100 rounded-lg transition-colors relative h-10 w-10 flex items-center justify-center"

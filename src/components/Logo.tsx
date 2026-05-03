@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'motion/react';
 
 export default function Logo({ className = "", textClassName = "text-slate-900" }: { className?: string; textClassName?: string }) {
@@ -7,35 +6,38 @@ export default function Logo({ className = "", textClassName = "text-slate-900" 
       <div className={`flex items-center font-display font-black tracking-tight text-xl sm:text-2xl md:text-3xl ${textClassName}`}>
         <span className="uppercase italic leading-none">Ha</span>
 
-        {/* The Q glyph — typographic circle + diagonal tail */}
+        {/* Q glyph — bold ring with short crossbar tail (letter Q, not magnifying glass) */}
         <div className="relative mx-0.5 flex items-center justify-center">
           <svg
-            viewBox="0 0 90 100"
+            viewBox="0 0 80 88"
             className="h-[1.15em] w-auto"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
           >
-            {/* Q body: bold circle */}
+            {/* Q body: bold circle ring */}
             <circle
-              cx="42" cy="46"
-              r="32"
+              cx="38" cy="40"
+              r="26"
               stroke="currentColor"
-              strokeWidth="11"
+              strokeWidth="12"
               fill="none"
             />
 
-            {/* Q tail: diagonal stroke from bottom-right of circle outward */}
+            {/*
+              Q tail: starts inside the circle at 5-o'clock (lower-right interior),
+              exits the ring by only ~10px — classic letter-Q proportions, not a handle.
+            */}
             <line
-              x1="62" y1="66"
-              x2="86" y2="94"
+              x1="50" y1="58"
+              x2="62" y2="70"
               stroke="currentColor"
-              strokeWidth="11"
+              strokeWidth="12"
               strokeLinecap="round"
             />
 
-            {/* Lightning bolt inside — blue, animated glow */}
+            {/* Lightning bolt inside — blue glow pulse */}
             <motion.path
-              d="M48 22L30 50H44L38 70L62 42H48L48 22Z"
+              d="M43 16L26 44H41L35 64L58 36H43L43 16Z"
               fill="#2563eb"
               animate={{
                 opacity: [0.8, 1, 0.8],

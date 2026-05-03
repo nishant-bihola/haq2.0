@@ -112,6 +112,22 @@ export default function HomePage() {
       opacity: 0, y: 30, duration: 0.8, ease: 'power3.out',
     });
 
+    // ── Section snap — snaps to nearest major section when scroll stops ──
+    const snapTargets = gsap.utils.toArray<HTMLElement>('#home, #services, #about');
+    ScrollTrigger.create({
+      snap: {
+        snapTo: (progress: number) => {
+          const max = ScrollTrigger.maxScroll(window);
+          if (max === 0) return progress;
+          const positions = snapTargets.map(el => el.offsetTop / max);
+          return gsap.utils.snap(positions, progress);
+        },
+        duration: { min: 0.3, max: 0.7 },
+        delay: 0.08,
+        ease: 'power2.inOut',
+      },
+    });
+
     // Scroll indicator arrow
     gsap.to('.scroll-arrow', {
       y: 10, repeat: -1, yoyo: true, duration: 0.8, ease: 'power1.inOut',
@@ -193,107 +209,144 @@ export default function HomePage() {
     <div ref={pageRef} className="min-h-screen bg-[#FDFDFF] font-sans text-slate-900 overflow-x-hidden">
 
       {/* ── HERO ── */}
-      <section id="home" className="relative min-h-[95vh] pt-32 pb-20 md:pt-40 md:pb-32 px-4 md:px-8 flex items-center justify-center overflow-hidden">
-        {/* Background ambient gradients */}
-        <div className="absolute top-0 right-0 w-[80vw] h-[80vw] max-w-[800px] max-h-[800px] bg-blue-500/10 rounded-full blur-[140px] -z-10 translate-x-1/3 -translate-y-1/3 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[60vw] h-[60vw] max-w-[600px] max-h-[600px] bg-indigo-500/10 rounded-full blur-[120px] -z-10 -translate-x-1/4 translate-y-1/4 pointer-events-none" />
-        
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] -z-10 mix-blend-overlay" />
+      <section id="home" className="relative min-h-screen pt-28 pb-16 md:pt-36 md:pb-24 px-4 md:px-8 flex items-center justify-center overflow-hidden bg-[#07101f]">
+
+        {/* ── Background image layer ── */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?q=80&w=2670&auto=format&fit=crop"
+            alt=""
+            className="w-full h-full object-cover object-center opacity-25 scale-105"
+            aria-hidden="true"
+          />
+          {/* Left gradient for text legibility */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#07101f] via-[#07101f]/90 to-transparent" />
+          {/* Vignette all edges */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#07101f]/80 via-transparent to-[#07101f]/60" />
+        </div>
+
+        {/* ── Atmospheric glow blobs ── */}
+        <div className="absolute top-0 right-0 w-[70vw] h-[70vw] max-w-[700px] max-h-[700px] bg-blue-600/20 rounded-full blur-[160px] z-0 translate-x-1/3 -translate-y-1/4 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[50vw] h-[50vw] max-w-[500px] max-h-[500px] bg-indigo-700/15 rounded-full blur-[130px] z-0 -translate-x-1/4 translate-y-1/4 pointer-events-none" />
+
+        {/* ── Grid texture ── */}
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.04] z-0 pointer-events-none" />
 
         <div className="max-w-7xl mx-auto w-full relative z-10">
-          <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-8 items-center">
+
+            {/* ── LEFT — copy ── */}
             <div className="lg:col-span-7 text-center lg:text-left flex flex-col items-center lg:items-start">
-              <div className="hero-badge inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-white/60 backdrop-blur-md text-blue-700 text-[10px] md:text-xs font-black uppercase tracking-[0.2em] mb-8 border border-white/40 shadow-[0_8px_30px_rgba(37,99,235,0.08)]">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-600"></span>
+
+              {/* Live badge */}
+              <div className="hero-badge inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-white/[0.07] backdrop-blur-md text-blue-300 text-[10px] md:text-xs font-black uppercase tracking-[0.22em] mb-7 border border-white/[0.12] shadow-[0_8px_30px_rgba(37,99,235,0.15)]">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500" />
                 </span>
                 Edmonton's Premier Electricians
               </div>
-              <h1 className="hero-title text-[3rem] sm:text-6xl lg:text-[6.5rem] font-black text-slate-900 mb-8 leading-[0.95] tracking-[-0.04em] uppercase">
-                <span className="block italic text-transparent bg-clip-text bg-gradient-to-br from-slate-900 to-slate-600">Master</span>
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Electrical</span>
-                <span className="block italic text-transparent bg-clip-text bg-gradient-to-br from-slate-900 to-slate-600">Solutions.</span>
+
+              {/* Headline */}
+              <h1 className="hero-title text-[3rem] sm:text-[4.5rem] lg:text-[6.5rem] xl:text-[7.5rem] font-black text-white mb-7 leading-[0.9] tracking-[-0.04em] uppercase">
+                <span className="block italic text-transparent bg-clip-text bg-gradient-to-br from-white to-white/70">Master</span>
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Electrical</span>
+                <span className="block italic text-transparent bg-clip-text bg-gradient-to-br from-white to-white/70">Solutions.</span>
               </h1>
-              <p className="hero-subtitle text-base sm:text-lg lg:text-xl text-slate-500 mb-12 max-w-xl leading-[1.8] font-medium">
-                Edmonton's most trusted electrical team. We handle everything from smart home wiring to full commercial builds — done right, done safely, done on time.
+
+              {/* Subtext */}
+              <p className="hero-subtitle text-sm sm:text-base lg:text-lg text-white/55 mb-10 max-w-lg leading-[1.85] font-medium">
+                Edmonton's most trusted electrical team. Smart home wiring to full commercial builds — done right, done safely, done on time.
               </p>
-              <div className="hero-ctas flex flex-col sm:flex-row gap-5 w-full sm:w-auto justify-center lg:justify-start">
+
+              {/* CTAs */}
+              <div className="hero-ctas flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-center lg:justify-start">
                 <a
                   href="tel:+17802979252"
-                  className="bg-slate-900 text-white px-8 py-5 sm:py-6 rounded-[2rem] font-bold text-base sm:text-lg hover:bg-slate-800 transition-all shadow-[0_20px_40px_rgba(15,23,42,0.15)] text-center flex items-center justify-center gap-3 group active:scale-95 w-full sm:w-auto"
+                  className="bg-blue-600 text-white px-8 py-4 sm:py-5 rounded-2xl font-black text-sm sm:text-base hover:bg-blue-500 transition-all shadow-[0_16px_40px_rgba(37,99,235,0.45)] hover:shadow-[0_20px_50px_rgba(37,99,235,0.6)] text-center flex items-center justify-center gap-3 group active:scale-[0.98] w-full sm:w-auto"
                 >
-                  <Phone className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                  <Phone className="w-4 h-4 group-hover:rotate-12 transition-transform" />
                   Call Now — Free Quote
                 </a>
+                <a
+                  href="#services"
+                  className="border border-white/20 text-white/80 px-8 py-4 sm:py-5 rounded-2xl font-bold text-sm sm:text-base hover:bg-white/[0.08] hover:border-white/30 transition-all text-center flex items-center justify-center gap-3 group active:scale-[0.98] w-full sm:w-auto backdrop-blur-sm"
+                >
+                  View Services
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </a>
               </div>
-              <div className="hero-trust flex flex-wrap gap-6 sm:gap-8 items-center justify-center lg:justify-start pt-8 border-t border-slate-100">
+
+              {/* Trust bar */}
+              <div className="hero-trust flex flex-wrap gap-5 sm:gap-7 items-center justify-center lg:justify-start pt-8 mt-2 border-t border-white/[0.08]">
                 <div className="flex items-center gap-2">
                   <div className="text-yellow-400 flex gap-0.5">
-                    {[1, 2, 3, 4, 5].map(i => <Star key={i} className="w-4 h-4 fill-current" />)}
+                    {[1, 2, 3, 4, 5].map(i => <Star key={i} className="w-3.5 h-3.5 fill-current" />)}
                   </div>
-                  <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest">5.0 · Top Rated YEG</span>
+                  <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">5.0 · Top Rated YEG</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-5 h-5 text-blue-600" />
-                  <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest">Licensed & Insured</span>
+                  <ShieldCheck className="w-4 h-4 text-blue-400" />
+                  <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Licensed & Insured</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Award className="w-5 h-5 text-blue-600" />
-                  <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest">15+ Years Experience</span>
+                  <Award className="w-4 h-4 text-blue-400" />
+                  <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">15+ Years Experience</span>
                 </div>
               </div>
             </div>
 
+            {/* ── RIGHT — photo ── */}
             <div className="lg:col-span-5 relative hero-img hidden sm:block">
-              <div className="relative z-10 w-full max-w-[500px] mx-auto lg:mx-0">
-                  <div className="rounded-[3rem] overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.12)] aspect-[4/5] border-8 border-white">
+              <div className="relative z-10 w-full max-w-[480px] mx-auto lg:mx-0">
+                <div className="rounded-[2.5rem] overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.5)] aspect-[4/5] border border-white/10">
                   <img
                     src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=2669&auto=format&fit=crop"
                     className="w-full h-full object-cover scale-105"
                     alt="Professional Electrician in Edmonton"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent" />
                 </div>
-                
-                {/* Floating UI Elements */}
-                <div className="hero-badge-float absolute -bottom-8 -left-8 md:-left-12 bg-white/90 backdrop-blur-xl p-6 rounded-[2rem] shadow-2xl border border-white flex items-center gap-5 z-20">
-                  <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30">
-                    <ShieldCheck className="text-white w-7 h-7" />
+
+                {/* Floating badge — response time */}
+                <div className="hero-badge-float absolute -bottom-6 -left-6 md:-left-10 bg-white/[0.08] backdrop-blur-2xl p-5 rounded-2xl shadow-2xl border border-white/10 flex items-center gap-4 z-20">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/40">
+                    <ShieldCheck className="text-white w-6 h-6" />
                   </div>
                   <div>
-                    <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-1">Response Time</p>
-                    <p className="text-slate-900 font-black text-2xl leading-none tracking-tight italic">&lt; 60 Min</p>
+                    <p className="text-white/50 text-[9px] font-bold uppercase tracking-[0.2em] mb-0.5">Response Time</p>
+                    <p className="text-white font-black text-xl leading-none tracking-tight italic">&lt; 60 Min</p>
                   </div>
                 </div>
 
-                <div className="absolute top-12 -right-8 bg-white/90 backdrop-blur-xl px-5 py-4 rounded-[1.5rem] shadow-2xl border border-white flex items-center gap-3 z-20">
-                  <div className="flex -space-x-2">
+                {/* Floating badge — reviews */}
+                <div className="absolute top-10 -right-5 md:-right-8 bg-white/[0.08] backdrop-blur-2xl px-4 py-3 rounded-xl shadow-2xl border border-white/10 flex items-center gap-3 z-20">
+                  <div className="flex -space-x-1.5">
                     {[1, 2, 3].map((i) => (
-                      <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-slate-200 overflow-hidden">
+                      <div key={i} className="w-7 h-7 rounded-full border-2 border-white/20 bg-slate-700 overflow-hidden">
                         <img src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="Client" className="w-full h-full object-cover" />
                       </div>
                     ))}
                   </div>
                   <div className="flex flex-col">
                     <div className="flex text-yellow-400">
-                      {[1,2,3,4,5].map(i => <Star key={i} className="w-3 h-3 fill-current" />)}
+                      {[1,2,3,4,5].map(i => <Star key={i} className="w-2.5 h-2.5 fill-current" />)}
                     </div>
-                    <span className="text-[9px] font-bold text-slate-500 uppercase">1.2k+ Reviews</span>
+                    <span className="text-[8px] font-bold text-white/50 uppercase mt-0.5">1.2k+ Reviews</span>
                   </div>
                 </div>
               </div>
-              
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-blue-600/10 rounded-full blur-[80px] -z-10 pointer-events-none" />
+
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[130%] h-[130%] bg-blue-600/15 rounded-full blur-[90px] -z-10 pointer-events-none" />
             </div>
           </div>
         </div>
 
         {/* Scroll indicator */}
-        <div className="hidden lg:flex flex-col items-center gap-2 absolute bottom-10 left-1/2 -translate-x-1/2">
-          <span className="text-[10px] font-bold text-slate-300 uppercase tracking-[0.3em]">Scroll</span>
-          <div className="scroll-arrow text-slate-300 animate-bounce">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        <div className="hidden lg:flex flex-col items-center gap-2 absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
+          <span className="text-[9px] font-bold text-white/25 uppercase tracking-[0.35em]">Scroll</span>
+          <div className="scroll-arrow text-white/25">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
           </div>
         </div>
       </section>
