@@ -2,8 +2,7 @@ import { useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Zap, ShieldCheck, Clock, Phone, ArrowRight, CheckCircle2,
-  Building2, Home, Star,
-  Bolt, MapPin, Award, TrendingUp,
+  Building2, Home, Star, Award, TrendingUp, Bolt, MapPin,
 } from 'lucide-react';
 import { gsap, ScrollTrigger, useGSAP } from '../lib/gsap';
 import { cn } from '../lib/utils';
@@ -251,7 +250,7 @@ export default function HomePage() {
                 <span className="block italic text-transparent bg-clip-text bg-gradient-to-br from-slate-900 to-slate-600">Solutions.</span>
               </h1>
               <p className="hero-subtitle text-base sm:text-lg lg:text-xl text-slate-500 mb-12 max-w-xl leading-[1.8] font-medium">
-                Premium residential and commercial electrical services. From modern lighting design to 24/7 emergency troubleshooting — precision and safety guaranteed.
+                Edmonton's most trusted electrical team. We handle everything from smart home wiring to full commercial builds — done right, done safely, done on time.
               </p>
               <div className="hero-ctas flex flex-col sm:flex-row gap-5 w-full sm:w-auto justify-center lg:justify-start">
                 <a
@@ -282,7 +281,7 @@ export default function HomePage() {
 
             <div className="lg:col-span-5 relative hero-img hidden sm:block">
               <div className="relative z-10 w-full max-w-[500px] mx-auto lg:mx-0">
-                <div className="rounded-[3rem] overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.12)] aspect-[4/5] border-8 border-white">
+                  <div className="rounded-[3rem] overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.12)] aspect-[4/5] border-8 border-white">
                   <img
                     src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=2669&auto=format&fit=crop"
                     className="w-full h-full object-cover scale-105"
@@ -327,32 +326,29 @@ export default function HomePage() {
         {/* Scroll indicator */}
         <div className="hidden lg:flex flex-col items-center gap-2 absolute bottom-10 left-1/2 -translate-x-1/2">
           <span className="text-[10px] font-bold text-slate-300 uppercase tracking-[0.3em]">Scroll</span>
-          <div className="scroll-arrow text-slate-300">
-            <ArrowDown className="w-5 h-5" />
+          <div className="scroll-arrow text-slate-300 animate-bounce">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
           </div>
         </div>
       </section>
 
-      {/* ── STATS GRID ── */}
-      <section className="py-24 bg-slate-900 relative overflow-hidden stats-grid">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(37,99,235,0.15),_transparent_70%)]" />
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 mix-blend-overlay" />
-        
+      {/* ── STATS ── */}
+      <section className="py-20 bg-slate-900 relative overflow-hidden stats-grid">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(37,99,235,0.18),_transparent_65%)]" />
         <div className="max-w-7xl mx-auto px-4 md:px-8 relative z-10">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {[
-              { id: 'stat-years', label: 'Years Experience', icon: <Award className="w-6 h-6" /> },
-              { id: 'stat-clients', label: 'Happy Clients', icon: <Star className="w-6 h-6" /> },
-              { id: 'stat-projects', label: 'Projects Done', icon: <Bolt className="w-6 h-6" /> },
-              { id: 'stat-rating', label: 'Google Rating', icon: <TrendingUp className="w-6 h-6" /> },
-            ].map((stat, i) => (
-              <div key={stat.id} className="relative group text-center p-8 rounded-[2rem] bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] transition-all duration-500 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="w-14 h-14 bg-blue-500/10 text-blue-400 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-500 border border-blue-500/20 shadow-[0_0_30px_rgba(37,99,235,0.2)]">
+              { id: 'stat-years',    label: 'Years in Edmonton', icon: <Award className="w-5 h-5" /> },
+              { id: 'stat-clients',  label: 'Happy Clients',     icon: <Star className="w-5 h-5" /> },
+              { id: 'stat-projects', label: 'Projects Complete', icon: <Bolt className="w-5 h-5" /> },
+              { id: 'stat-rating',   label: 'Google Rating',     icon: <TrendingUp className="w-5 h-5" /> },
+            ].map((stat) => (
+              <div key={stat.id} className="group text-center p-6 md:p-8 rounded-[2rem] bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.07] transition-all duration-300">
+                <div className="w-11 h-11 bg-blue-500/10 text-blue-400 rounded-xl flex items-center justify-center mx-auto mb-5 border border-blue-500/20">
                   {stat.icon}
                 </div>
-                <div id={stat.id} className="text-4xl md:text-6xl font-black text-white tracking-tighter mb-3 drop-shadow-lg">0</div>
-                <p className="text-blue-200/70 text-[10px] md:text-xs font-bold uppercase tracking-[0.25em]">{stat.label}</p>
+                <div id={stat.id} className="text-3xl md:text-5xl font-black text-white tracking-tighter mb-2">0</div>
+                <p className="text-blue-200/60 text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em]">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -392,20 +388,20 @@ export default function HomePage() {
       {/* ── SERVICES ── */}
       <section id="services" className="py-24 md:py-36 px-4 md:px-8 bg-slate-50 relative">
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="services-header max-w-3xl mb-16 md:mb-24 mx-auto text-center">
-            <div className="inline-flex items-center justify-center px-4 py-1.5 bg-blue-100/50 border border-blue-200/50 rounded-full text-blue-700 text-[10px] font-black tracking-[0.2em] mb-6 uppercase">
-              Our Services
+          <div className="services-header max-w-3xl mb-16 md:mb-20 mx-auto text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-50 border border-blue-100 rounded-full text-blue-700 text-[10px] font-black tracking-[0.2em] mb-6 uppercase">
+              <Zap className="w-3 h-3" /> Our Services
             </div>
-            <h2 className="text-4xl md:text-6xl font-black text-slate-900 mb-6 tracking-[-0.03em] leading-[1.05] uppercase italic">
-              Electrical Expertise <br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">You Can Trust.</span>
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-slate-900 mb-6 tracking-[-0.03em] leading-[1.02] uppercase italic">
+              Built for Edmonton.
+              <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">Built to Last.</span>
             </h2>
-            <p className="text-base md:text-lg text-slate-500 font-medium leading-relaxed max-w-2xl mx-auto">
-              Every job handled with precision and care. Fully committed to safety, aesthetic integration, and uncompromising local code compliance.
+            <p className="text-base md:text-lg text-slate-500 font-medium leading-relaxed max-w-xl mx-auto">
+              Every job delivered on time, to code, and with the pride of a locally owned team that genuinely cares.
             </p>
           </div>
 
-          <div className="services-grid grid md:grid-cols-3 gap-6 lg:gap-8">
+          <div className="services-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 lg:gap-7">
             {services.map((service, idx) => (
               <a
                 key={idx}
@@ -487,25 +483,25 @@ export default function HomePage() {
             <div className="inline-flex items-center justify-center px-4 py-1.5 bg-blue-50 border border-blue-100 rounded-full text-blue-600 text-[10px] font-bold tracking-[0.2em] mb-6 uppercase shadow-sm">
               Local Edmonton Experts
             </div>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-10 tracking-[-0.03em] uppercase italic leading-[1] max-w-2xl mx-auto lg:mx-0">
-              The Standard for <br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 non-italic">Electrical Safety.</span>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-8 tracking-[-0.03em] uppercase italic leading-[1] max-w-2xl mx-auto lg:mx-0">
+              Built on Trust.
+              <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">Wired for Safety.</span>
             </h2>
             <div className="about-features space-y-4">
               {[
                 {
-                  title: 'Licensed Master Electricians',
-                  desc: 'Our team consists of Master Electricians fully licensed in Alberta, ensuring high-standard safety on every job.',
-                  icon: <Star className="w-5 h-5" />,
+                  title: 'Master-Licensed Team',
+                  desc: 'Every technician is a certified Master Electrician under Alberta regulations — no shortcuts, no subcontractors.',
+                  icon: <Award className="w-5 h-5" />,
                 },
                 {
-                  title: 'Clear & Honest Pricing',
-                  desc: 'No hidden fees. We provide itemized quotes before any work begins on your Edmonton home or office.',
+                  title: 'Upfront, Honest Pricing',
+                  desc: 'You get a detailed quote before we lift a tool. No surprise fees. No inflated invoices. Guaranteed.',
                   icon: <CheckCircle2 className="w-5 h-5" />,
                 },
                 {
-                  title: '24/7 Availability',
-                  desc: 'Electrical issues don\'t wait. Round-the-clock emergency services across the entire Edmonton metro area.',
+                  title: '60-Min Emergency Response',
+                  desc: 'Power out at midnight? We\'re there. Our 24/7 dispatch covers all of Edmonton and surrounding areas.',
                   icon: <Clock className="w-5 h-5" />,
                 },
               ].map((item, idx) => (
@@ -589,89 +585,73 @@ export default function HomePage() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="cta-section py-32 md:py-48 px-4 md:px-8 bg-slate-900 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(37,99,235,0.15),_transparent_60%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(37,99,235,0.1),_transparent_60%)]" />
+      <section className="cta-section py-28 md:py-44 px-4 md:px-8 bg-slate-900 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(37,99,235,0.2),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(99,102,241,0.1),_transparent_55%)]" />
         <div className="max-w-5xl mx-auto text-center relative z-10">
-          <div className="overflow-hidden">
-            <div className="cta-line text-4xl sm:text-6xl md:text-[7rem] font-black text-white tracking-[-0.04em] uppercase italic leading-[0.92]">
-              Ready to get
+          <div className="overflow-hidden mb-1">
+            <div className="cta-line text-4xl sm:text-6xl md:text-[7rem] font-black text-white tracking-[-0.04em] uppercase italic leading-[0.9]">Stop
             </div>
           </div>
-          <div className="overflow-hidden">
-            <div className="cta-line text-4xl sm:text-6xl md:text-[7rem] font-black text-blue-500 tracking-[-0.04em] uppercase italic leading-[0.92]">
-              the best help
+          <div className="overflow-hidden mb-1">
+            <div className="cta-line text-4xl sm:text-6xl md:text-[7rem] font-black text-blue-500 tracking-[-0.04em] uppercase italic leading-[0.9]">Worrying
             </div>
           </div>
-          <div className="overflow-hidden">
-            <div className="cta-line text-4xl sm:text-6xl md:text-[7rem] font-black text-white tracking-[-0.04em] uppercase italic leading-[0.92] mb-12">
-              in the city?
+          <div className="overflow-hidden mb-10">
+            <div className="cta-line text-4xl sm:text-6xl md:text-[7rem] font-black text-white tracking-[-0.04em] uppercase italic leading-[0.9]">About It.
             </div>
           </div>
-          <p className="cta-sub text-lg md:text-2xl text-white/50 mb-14 max-w-2xl mx-auto font-medium leading-relaxed">
-            Join thousands of Edmonton property owners who trust Haq Electrics for reliability, safety, and expert service.
+          <p className="cta-sub text-base md:text-xl text-white/50 mb-12 max-w-xl mx-auto font-medium leading-relaxed">
+            One call. One team. One standard — the best in Edmonton. Get your free quote today.
           </p>
           <div className="cta-btn flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="tel:+17802979252"
-              className="bg-blue-600 text-white px-12 md:px-16 py-5 md:py-7 rounded-full font-black text-xl md:text-2xl hover:bg-blue-500 transition-all flex items-center justify-center gap-3 shadow-[0_20px_50px_rgba(37,99,235,0.4)] active:scale-95 group"
+              className="bg-blue-600 text-white px-10 md:px-16 py-5 md:py-6 rounded-full font-black text-lg md:text-2xl hover:bg-blue-500 transition-all flex items-center justify-center gap-3 shadow-[0_20px_50px_rgba(37,99,235,0.4)] active:scale-95 group"
             >
-              Call Us Now
-              <Phone className="w-7 h-7 group-hover:rotate-12 transition-transform" />
+              <Phone className="w-6 h-6 group-hover:rotate-12 transition-transform" />
+              Call 1-780-297-9252
             </a>
           </div>
         </div>
       </section>
 
       {/* ── FOOTER ── */}
-      <footer id="footer" className="bg-white pt-20 md:pt-28 pb-12 px-4 md:px-8 border-t border-slate-100">
+      <footer id="footer" className="bg-[#0a0f1e] pt-20 md:pt-28 pb-10 px-4 md:px-8">
         <div className="max-w-7xl mx-auto footer-content">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-14 md:gap-20 mb-16 text-center md:text-left">
-            <div className="md:col-span-2 flex flex-col items-center md:items-start">
-              <a href="#home" className="inline-block mb-6">
-                <div className="text-2xl font-black tracking-tighter italic text-slate-900">HAQ<span className="text-blue-600">.</span></div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 md:gap-16 mb-16">
+            <div className="sm:col-span-2 flex flex-col items-start">
+              <a href="#home" className="inline-block mb-5">
+                <div className="text-2xl font-black tracking-tighter italic text-white">HAQ<span className="text-blue-500">.</span></div>
               </a>
-              <p className="text-slate-400 max-w-sm mb-8 leading-relaxed font-medium text-sm">
-                Premium electrical services in Edmonton, Alberta. Dedicated to quality craftsmanship and community safety since 2009.
+              <p className="text-slate-500 max-w-xs mb-8 leading-relaxed font-medium text-sm">
+                Edmonton's trusted master electricians since 2009. Licensed, insured, and locally proud.
               </p>
-              <a href="tel:+17802979252" className="flex items-center gap-3 text-slate-900 font-black text-2xl italic hover:text-blue-600 transition-colors">
-                <Phone className="w-6 h-6 text-blue-600" />
+              <a href="tel:+17802979252" className="flex items-center gap-3 text-white font-black text-xl italic hover:text-blue-400 transition-colors">
+                <Phone className="w-5 h-5 text-blue-500 shrink-0" />
                 1-780-297-9252
               </a>
             </div>
-            <div className="flex flex-col items-center md:items-start">
-              <h4 className="font-bold mb-6 text-blue-600 uppercase tracking-widest text-[10px]">Navigation</h4>
-              <ul className="space-y-3 text-slate-700 font-bold text-sm">
-                {[
-                  { name: 'Home', href: '#home' },
-                  { name: 'Services', href: '#services' },
-                  { name: 'About Us', href: '#about' },
-                  { name: 'Contact', href: '#contact' },
-                  { name: 'Admin', href: '/admin' },
-                ].map(l => (
-                  <li key={l.name}>
-                    <a href={l.href} className="hover:text-blue-600 transition-colors">{l.name}</a>
-                  </li>
+            <div className="flex flex-col items-start">
+              <h4 className="font-black mb-5 text-blue-500 uppercase tracking-widest text-[10px]">Navigation</h4>
+              <ul className="space-y-3">
+                {[{name:'Home',href:'#home'},{name:'Services',href:'#services'},{name:'About',href:'#about'},{name:'Admin',href:'/admin'}].map(l => (
+                  <li key={l.name}><a href={l.href} className="text-slate-400 hover:text-white transition-colors font-medium text-sm">{l.name}</a></li>
                 ))}
               </ul>
             </div>
-            <div className="flex flex-col items-center md:items-start">
-              <h4 className="font-bold mb-6 text-blue-600 uppercase tracking-widest text-[10px]">Services</h4>
-              <ul className="space-y-3 text-slate-700 font-medium text-sm">
-                {['Residential Electrical', 'Commercial Electrical', '24/7 Emergency', 'Panel Upgrades', 'EV Charger Install', 'Safety Inspections'].map(s => (
-                  <li key={s} className="hover:text-blue-600 transition-colors cursor-default">{s}</li>
+            <div className="flex flex-col items-start">
+              <h4 className="font-black mb-5 text-blue-500 uppercase tracking-widest text-[10px]">Services</h4>
+              <ul className="space-y-3">
+                {['Residential Wiring','Commercial Fit-outs','24/7 Emergency','Panel Upgrades','EV Charger Install','Safety Inspections'].map(s => (
+                  <li key={s} className="text-slate-400 text-sm font-medium hover:text-white transition-colors cursor-default">{s}</li>
                 ))}
               </ul>
             </div>
           </div>
-          <div className="pt-10 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6 text-slate-400 text-[10px] font-bold uppercase tracking-[0.25em] text-center">
-            <p>© 2025 Haq Electrics Ltd. · Edmonton Certified Master Electrician</p>
-            <div className="flex flex-wrap justify-center gap-6">
-              <span className="hover:text-blue-600 transition-colors cursor-default">Residential</span>
-              <span className="hover:text-blue-600 transition-colors cursor-default">Commercial</span>
-              <span className="hover:text-blue-600 transition-colors cursor-default">24/7 Support</span>
-              <span className="hover:text-blue-600 transition-colors cursor-default">EV Charging</span>
-            </div>
+          <div className="pt-8 border-t border-white/[0.06] flex flex-col md:flex-row justify-between items-center gap-4 text-slate-600 text-[10px] font-bold uppercase tracking-[0.2em] text-center">
+            <p>© 2025 Haq Electrics Ltd. · Edmonton, Alberta</p>
+            <p>Master Electricians · Licensed · Insured · Alberta Safety Codes</p>
           </div>
         </div>
       </footer>
