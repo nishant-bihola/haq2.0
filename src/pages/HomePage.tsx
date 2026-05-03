@@ -117,15 +117,18 @@ export default function HomePage() {
       {/* ──────────────────────── HERO ──────────────────────── */}
       <section id="home" className="relative min-h-screen pt-28 pb-16 md:pt-36 md:pb-24 px-4 md:px-8 flex items-center justify-center overflow-hidden bg-[#06101c]">
 
-        {/* Background photo + overlays */}
+        {/* Background video + overlays */}
         <div className="absolute inset-0 z-0">
-          <img
-            src="https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?q=80&w=2670&auto=format&fit=crop"
-            alt=""
+          <video
+            className="w-full h-full object-cover object-center opacity-30 scale-105"
+            src="/hero.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
             aria-hidden="true"
-            className="w-full h-full object-cover object-center opacity-20 scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#06101c] via-[#06101c]/88 to-[#06101c]/30" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#06101c] via-[#06101c]/85 to-[#06101c]/25" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#06101c]/70 via-transparent to-[#06101c]/50" />
         </div>
 
